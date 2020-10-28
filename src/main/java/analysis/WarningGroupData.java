@@ -58,12 +58,14 @@ public class WarningGroupData {
 
     private static void PrintLabelSheet(WritableSheet sheet) {
         try {
-            sheet.addCell(new Label(0, 0, "PORT-ID"));
-            sheet.addCell(new Label(1, 0, "ERROR_TYPE"));
-            sheet.addCell(new Label(2, 0, "HAPPEN_TIME"));
-            sheet.addCell(new Label(3, 0, "LANE"));
-            sheet.addCell(new Label(4, 0, "PORT_LEVEL"));
-            sheet.addCell(new Label(5, 0, "FREQUENT_TIME"));
+            sheet.addCell(new Label(0,0,"ROUTE_NAME"));
+            sheet.addCell(new Label(0, 1, "PORT-ID"));
+            sheet.addCell(new Label(1, 1, "ERROR_TYPE"));
+            sheet.addCell(new Label(2, 1, "HAPPEN_TIME"));
+            sheet.addCell(new Label(3, 1, "HANDLE_TIME"));
+            sheet.addCell(new Label(4, 1, "LANE"));
+            sheet.addCell(new Label(5, 1, "PORT_LEVEL"));
+            sheet.addCell(new Label(6, 1, "FREQUENT_TIME"));
             //sheet.addCell(new Label(6, 0, "PORT-ID"));
             //sheet.addCell(new Label(7, 0, "PORT-ID"));
         } catch (Exception e) {
@@ -113,26 +115,29 @@ public class WarningGroupData {
 
     public void MakeGroup(WritableSheet sheet) {
         PrintLabelSheet(sheet);
-        int i = 1;
-        for (WarningFormatData data:
-             this.warn_data_list) {
-            try {
-                sheet.addCell(new Label(0,i, data.device_data.GetLabel()));
-                sheet.addCell(new Label(1,i, data.err_signal.string_type));
-                sheet.addCell(new Label(2,i, data.happen_time.toString()));
+        try {
+            sheet.addCell(new Label(1, 0, this.warning_on_route));
+            int i = 2;
+            for (WarningFormatData data :
+                    this.warn_data_list) {
+
+                sheet.addCell(new Label(0, i, data.device_data.GetLabel()));
+                sheet.addCell(new Label(1, i, data.err_signal.string_type));
+                sheet.addCell(new Label(2, i, data.happen_time.toString()));
+                sheet.addCell(new Label(3, i, data.handle_time.toString()));
                 String str = data.device_data.GetLabel();
                 TorpoDevice dev = torpo_map.get(str);
                 if (dev == null) {
-                    sheet.addCell(new Label(3,i, "NO SUCH PORT IN LINE"));
+                    sheet.addCell(new Label(4, i, "NO SUCH PORT IN LINE"));
                     i++;
                     continue;
                 }
-                sheet.addCell(new Label(4,i, String.valueOf(dev.getDev_level())));
-                sheet.addCell(new Label(5,i, String.valueOf(data.combine_time)));
+                sheet.addCell(new Label(5, i, String.valueOf(dev.getDev_level())));
+                sheet.addCell(new Label(6, i, String.valueOf(data.combine_time)));
                 i++;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

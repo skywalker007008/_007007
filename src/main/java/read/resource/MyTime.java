@@ -71,7 +71,7 @@ public class MyTime {
         }
         // only day changes
         else if (year == 0 && month == 0 && day != 0) {
-            return (day * 8760 + seconds);
+            return (day * 86400 + seconds);
         }
         // day & month change
         else if (year == 0 && month != 0) {
