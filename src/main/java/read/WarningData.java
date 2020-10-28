@@ -56,26 +56,26 @@ public class WarningData {
                     // sheet.getColumns()返回该页的总列数
                     WarningFormatData data = new WarningFormatData();
 
-                    data.order = Integer.parseInt(sheet.getCell(0, i).getContents());
+                    data.order = Integer.parseInt(sheet.getCell(12, i).getContents());
                     Device dev = new Device();
-                    dev.device_type = sheet.getCell(3,i).getContents();
-                    boolean judge = dev.ReadDeviceLine(sheet.getCell(5, i).getContents(  ));
-                    judge = judge && dev.ReadDeviceInfo(sheet.getCell(16, i).getContents());
+                    dev.device_type = sheet.getCell(5,i).getContents();
+                    boolean judge = dev.ReadDeviceLine(sheet.getCell(4, i).getContents(  ));
+                    judge = judge && dev.ReadDeviceInfo(sheet.getCell(6, i).getContents());
                     data.device_data = dev;
                     dev.CountOnlyLabel();
                     if (judge) {
                         data.device_data.CountOnlyLabel();
                         InsertData(data);
                     }
-                    String impt_value = sheet.getCell(7,i).getContents();
-                    int err_value = Integer.parseInt(sheet.getCell(21,i).getContents());
-                    String string_type = sheet.getCell(9,i).getContents();
+                    String impt_value = sheet.getCell(1,i).getContents();
+                    int err_value = Integer.parseInt(sheet.getCell(2,i).getContents());
+                    String string_type = sheet.getCell(3,i).getContents();
                     ErrorSignalType err_signal = new ErrorSignalType(string_type, err_value, impt_value);
                     data.err_signal = err_signal;
 
-                    data.happen_time = new MyTime(sheet.getCell(11,i).getContents(), false);
-                    data.handle_time = new MyTime(sheet.getCell(13,i).getContents(), false);
-                    data.confirm_time = new MyTime(sheet.getCell(12,i).getContents(), false);
+                    data.happen_time = new MyTime(sheet.getCell(8,i).getContents());
+                    data.handle_time = new MyTime(sheet.getCell(9,i).getContents());
+                    data.confirm_time = new MyTime(sheet.getCell(10,i).getContents());
 
                 }
             }

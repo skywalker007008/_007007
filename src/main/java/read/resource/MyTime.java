@@ -132,4 +132,8 @@ public class MyTime {
 
         return str;
     }
+
+    public String toString() {
+        return this.PrintOut();
+    }
 }

@@ -87,7 +87,9 @@ public class Analysis {
                     WarningFormatData old_data = cache_frequent_warning_data.get(tmp_pair);
                     boolean is_renew = TryToCombineFrequentWarnings(old_data, warn_data);
                     if (is_renew) {
-                        // Renew, so keep it still inside the cache
+                        // Renew, so delete this warning
+                       //
+                        // i--;
                     } else if (old_data.combine_time > 1){
                         // Not renew, make this old cache into the list, and add the new one.
                         cache_frequent_warning_data.remove(tmp_pair);
@@ -97,7 +99,7 @@ public class Analysis {
                         cache_frequent_warning_data.put(tmp_pair, warn_data);
                         group_warning_data.add(warn_data);
                         // Whether leave out the frequent warnings
-                        group_warning_data.remove(old_data);
+                        // group_warning_data.remove(old_data);
                     } else {
                         cache_frequent_warning_data.put(tmp_pair, warn_data);
                         group_warning_data.add(warn_data);
@@ -108,7 +110,7 @@ public class Analysis {
                     group_warning_data.add(warn_data);
                 }
 
-                System.out.println("Finish" + i);
+                // System.out.println("Finish" + i);
             }
             // PrintOut
             BufferedWriter text = new BufferedWriter(new FileWriter(new File("result.csv")));
@@ -130,17 +132,10 @@ public class Analysis {
         cache_frequent_warning_data.clear();
     }
 
-    /*
-    public void CombineFrequentWarnings() {
-
-    }
-    */
-
     public void GroupRelevantWarnings() {
         // Step 1: Find warning data from left warnings
         for (WarningFormatData warn_data:
              group_warning_data) {
-            // Extra: Leave out all the frequent ones
             // Step 2: First Group line with time limit exceeded
             MyTime now_happen_time = warn_data.happen_time;
             HashSet<String> set = new HashSet<String>();
@@ -186,7 +181,7 @@ public class Analysis {
     }
 
     public void AnalysisResultPrintOut() {
-        File analyse_file = new File("Analysis.xls");
+        File analyse_file = new File("Analysis_NEW.xls");
         try {
             analyse_file.createNewFile();
             WritableWorkbook workbook = Workbook.createWorkbook(analyse_file);
@@ -194,11 +189,13 @@ public class Analysis {
             for (WarningGroupData data:
                  this.related_warning_data) {
                 //WritableSheet sheet = workbook.createSheet(data.GetWarningRoute() + "-Info " + String.valueOf(i), i);
-                WritableSheet sheet = workbook.createSheet("Info-" + String.valueOf(i), i);
+                //WritableSheet sheet = workbook.createSheet(data.GetWarningRoute() + String.valueOf(i), i);
+                WritableSheet sheet = workbook.createSheet("ErrorInfo-" + String.valueOf(i), i);
                 i = i + 1;
                 data.SetSheetForTorpoVisualize(sheet);
-                data.BuildRelatedWarningsTorpo(true);
-
+                //data.BuildRelatedWarningsTorpo(true);
+                data.MakeGroup(sheet);
+                System.out.println("Finish Analysis" + i);
             }
             if (related_warning_data.size() > 0) {
                 workbook.write();
@@ -218,11 +215,13 @@ public class Analysis {
         related_warning_data.add(group_data);
         ArrayList<WarningFormatData> new_warn_list;
         HashMap<String, TorpoDevice> new_tp_list;
-        Pair<ArrayList<WarningFormatData>, HashMap<String, TorpoDevice>> pair_lists = group_data.MakeGroup();
+
+        //Pair<ArrayList<WarningFormatData>, HashMap<String, TorpoDevice>> pair_lists = group_data.MakeGroup();
         cache_related_warning_data.remove(line_name);
         cache_related_device_torpo.remove(line_name);
-        cache_related_device_torpo.put(line_name, pair_lists.getValue());
-        cache_related_warning_data.put(line_name, pair_lists.getKey());
+        //cache_related_device_torpo.put(line_name, pair_lists.getValue());
+        //cache_related_warning_data.put(line_name, pair_lists.getKey());
+
     }
 
     public boolean TryToCombineFrequentWarnings(WarningFormatData old_data, WarningFormatData new_data) {

@@ -1,6 +1,7 @@
 package analysis;
 
 import javafx.util.Pair;
+import jxl.write.Label;
 import jxl.write.WritableSheet;
 import read.WarningFormatData;
 import read.resource.Device;
@@ -55,6 +56,22 @@ public class WarningGroupData {
     private WritableSheet sheet;
     private VisualTorpo visual_torpo;
 
+    private static void PrintLabelSheet(WritableSheet sheet) {
+        try {
+            sheet.addCell(new Label(0, 0, "PORT-ID"));
+            sheet.addCell(new Label(1, 0, "ERROR_TYPE"));
+            sheet.addCell(new Label(2, 0, "HAPPEN_TIME"));
+            sheet.addCell(new Label(3, 0, "LANE"));
+            sheet.addCell(new Label(4, 0, "PORT_LEVEL"));
+            sheet.addCell(new Label(5, 0, "FREQUENT_TIME"));
+            //sheet.addCell(new Label(6, 0, "PORT-ID"));
+            //sheet.addCell(new Label(7, 0, "PORT-ID"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public WarningGroupData() {
 
@@ -93,6 +110,32 @@ public class WarningGroupData {
         this.sheet = sheet;
     }
 
+
+    public void MakeGroup(WritableSheet sheet) {
+        PrintLabelSheet(sheet);
+        int i = 1;
+        for (WarningFormatData data:
+             this.warn_data_list) {
+            try {
+                sheet.addCell(new Label(0,i, data.device_data.GetLabel()));
+                sheet.addCell(new Label(1,i, data.err_signal.string_type));
+                sheet.addCell(new Label(2,i, data.happen_time.toString()));
+                String str = data.device_data.GetLabel();
+                TorpoDevice dev = torpo_map.get(str);
+                if (dev == null) {
+                    sheet.addCell(new Label(3,i, "NO SUCH PORT IN LINE"));
+                    i++;
+                    continue;
+                }
+                sheet.addCell(new Label(4,i, String.valueOf(dev.getDev_level())));
+                sheet.addCell(new Label(5,i, String.valueOf(data.combine_time)));
+                i++;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /*
         Make Group Node in order
      */
@@ -112,8 +155,9 @@ public class WarningGroupData {
         for (WarningFormatData warn_data:
              this.warn_data_list) {
             String str = warn_data.device_data.GetLabel();
+            String lab_str = str + "_Error_" + warn_data.err_signal.string_type;
             // Add to map
-            warn_data_map.put(str, warn_data);
+            warn_data_map.put(lab_str, warn_data);
             if (!torpo_map.containsKey(str)) {
                 // Something error
             }
@@ -121,14 +165,19 @@ public class WarningGroupData {
             cache_device_map.put(str, torpo_map.get(str));
             int level = tp_dev.getDev_level();
 
+            ArrayList<WarningFormatData> start_warn_data = new ArrayList<WarningFormatData>();
+
             // IF more below, replace the map\
             if (this.min_level != -1) {
                 if (level < this.min_level) {
                     this.min_level = level;
                     start_devs.clear();
+                    start_warn_data.clear();
+                    start_warn_data.add(warn_data);
                     start_devs.put(str, tp_dev);
                 } else if (level == this.min_level) {
                     start_devs.put(str, tp_dev);
+                    start_warn_data.add(warn_data);
                 } else {
                     // No other operation
                 }
@@ -136,10 +185,17 @@ public class WarningGroupData {
                 this.min_level = level;
                 // start_devs.clear();
                 start_devs.put(str, tp_dev);
+                start_warn_data.add(warn_data);
             }
 
         }
 
+        /*
+         * Test Part: list err_details
+         * Try to find some relationships
+         */
+
+        this.painting_map = new HashMap<TorpoDevice, Integer>();
         /*
          * Step 2: Build route downside
          * Just use for Print

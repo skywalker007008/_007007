@@ -7,7 +7,7 @@ public class MainProcedure {
 
         System.out.println("Excel Data Loading...");
         WarningData excel_data = new WarningData(1000);
-        excel_data.ReadExcelData("C://Users//Administrator//IdeaProjects//_007007/test.xls");
+        excel_data.ReadExcelDataNew("C://Users//Administrator//IdeaProjects//_007007/test_part.xls");
         //excel_data.ReadExcelDataNew("C://Users//Administrator//IdeaProjects//_007007/test_new.xls");
         System.out.println("Excel Data Loaded Success!");
         // Test Almost Finished

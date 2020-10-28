@@ -34,7 +34,7 @@ public class TorpoRoute {
     public void PrintOutRouteMsg(WritableSheet sheet) {
         visual = new VisualTorpo(sheet);
         painting_map = new HashMap<String, TorpoDevice>();
-        System.out.println(this.route_name);
+        //System.out.println(this.route_name);
         for (String str:
              entry_device_map.keySet()) {
             TorpoDevice dev = entry_device_map.get(str);
