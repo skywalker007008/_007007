@@ -36,13 +36,14 @@ public class Device {
 
     // Only-Sign
     private String only_label;
+    private String line_label;
 
     // pattern info
 
     // public static final String device_location_pattern ="(\\d+)[-]((\\S|[\u4e00-\u9fa5])+)[-](\\d+)[-]((\\S|[\u4e00-\u9fa5])+)[-](\\d+)([(](\\S|[\u4e00-\u9fa5])+[)])[-]((\\S|[\u4e00-\u9fa5])+)";
 
    public static final String device_location_pattern =
-           "[\u4e00-\u9fa5]*(\\d+)[-]*((\\S|[\u4e00-\u9fa5]))*[-](\\d+)[-]((\\S|[\u4e00-\u9fa5])+)[-](\\d+)([(](\\S|[\u4e00-\u9fa5])+[)])([-]((\\S|[\u4e00-\u9fa5])+))*";
+           "[\u4e00-\u9fa5]*(\\d+)[-]*((\\S|[ ]|[\u4e00-\u9fa5]))*[-](\\d+)[-]((\\S|[\u4e00-\u9fa5])+)[-](\\d+)[(]";
 
 
     public Device() {
@@ -72,10 +73,13 @@ public class Device {
     }
 
     public void CountOnlyLabel() {
+
         if (line_id != -1) {
             this.only_label = String.valueOf(line_id) + "-" + String.valueOf(subrack) + "-" + String.valueOf(board_num) + "-" + board_name +
                     "-" + String.valueOf(port_num);
         }
+
+        //this.only_label = this.line_label + this.only_label;
     }
 
     public boolean ReadDeviceInfo(String info) {
@@ -89,20 +93,22 @@ public class Device {
             this.board_num = Integer.parseInt(match.group(4));
             this.board_name = match.group(5);
             this.port_num = Integer.parseInt(match.group(7));
-            this.port_info = match.group(8);
-            this.extra_info = match.group(10);
+            //this.port_info = match.group(8);
+            //this.extra_info = match.group(10);
+            this.extra_info = info.substring(0, match.end());
 
             return true;
         } else {
             return false;
-            // Unsolved 4-4 problem
         }
 
 
+        //this.only_label = info;
+        // return true;
     }
 
     public boolean ReadDeviceLine(String name) {
-
+        this.line_label = name;
         String pat_name = "[H](\\d+)[-](([\u4e00-\u9fa5]|\\S)+)";
         Pattern pat = Pattern.compile(pat_name);
         Matcher match = pat.matcher(name);

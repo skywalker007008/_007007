@@ -34,12 +34,23 @@ public class TorpoRoute {
     public void PrintOutRouteMsg(WritableSheet sheet) {
         visual = new VisualTorpo(sheet);
         painting_map = new HashMap<String, TorpoDevice>();
-        //System.out.println(this.route_name);
+
+        UpdateTorpoData();
+
         for (String str:
              entry_device_map.keySet()) {
             TorpoDevice dev = entry_device_map.get(str);
 
             this.PrintTorpoDevMsg(str);
+        }
+    }
+
+    public void UpdateTorpoData() {
+        for (String str:
+                entry_device_map.keySet()) {
+            TorpoDevice dev = entry_device_map.get(str);
+
+            dev.FlushData(null);
         }
     }
 
@@ -66,8 +77,7 @@ public class TorpoRoute {
             }
             String str2 = dev.getBelow_dev().GetLabel();
             this.PrintTorpoDevMsg(str2);
-            if ((dev.getDev_type() == TorpoDevice.TYPE_OLP_3) &&
-                    (!dev.isIs_side_in())) {
+            if (!dev.isIs_side_in() && dev.getSide_dev() != null) {
                 String str3 = dev.getSide_dev().GetLabel();
                 this.PrintTorpoDevMsg(str3);
             }
@@ -94,29 +104,7 @@ public class TorpoRoute {
             TorpoDevice in_dev;
             if (!cache_device_map.containsKey(in_label)) {
                 // Not Exists, first entry or something wrong
-                /*
-                if (level == 0) {
-                    // First Entry
-                    in_dev = new TorpoDevice();
-                    int dev_type = TorpoDevice.JudgeDeviceTypeByLabel(in_label);
-                    in_dev.setDev_type(dev_type);
-                    in_dev.setDev_level(0);
-                    in_dev.ReadDeviceLine(in_device_line_info);
-                    in_dev.ReadDeviceInfo(in_device_info);
-                    // Add to Entry and cache
-                    cache_device_map.put(in_label, in_dev);
-                    entry_device_map.put(in_label, in_dev);
-                    device_map.put(in_label, in_dev);
-                } else {
-                    // Should not repeat or never existed
-                    if (device_map.containsKey(in_label)) {
-                        // Exception: Repeated after its finished
-                    } else {
-                        // Exception: Data never existed
-                    }
-                    in_dev = null;
-                }
-                */
+
                 in_dev = new TorpoDevice();
                 int dev_type = TorpoDevice.JudgeDeviceTypeByLabel(in_label);
                 in_dev.setDev_type(dev_type);
@@ -158,22 +146,104 @@ public class TorpoRoute {
 
             // According to the kind, deal with it.
 
-            LinkAndEraseDevs(in_dev, out_dev);
+            LinkAndEraseDevs(in_dev, out_dev, false);
 
             if (this.level < in_dev.getDev_level()) {
                 this.level = in_dev.getDev_level();
             }
 
         }
-
-        // Out in the cache
-
-        // exit_device_map.putAll(cache_device_map);
-
-        // End
         return true;
     }
 
+    private boolean LinkAndEraseDevs(TorpoDevice in_dev, TorpoDevice out_dev, boolean is_use) {
+        if (in_dev == null || out_dev == null) {
+            return false;
+        }
+        // Type 1: D40-COMMONS
+
+        // Kind 1: Common-D40
+        if ((in_dev.getDev_type() == TorpoDevice.TYPE_COMMON) && (out_dev.getDev_type() == TorpoDevice.TYPE_D40_1)) {
+            boolean is_success1 = in_dev.setBelow_dev(out_dev);
+            boolean is_success2 = out_dev.setAbove_dev(in_dev);
+            if (!is_success1 || !is_success2) {
+                // Something Wrong
+            }
+        }
+
+        // Kind 2: D40-COMMONS
+        else if ((in_dev.getDev_type() == TorpoDevice.TYPE_D40_1) && (out_dev.getDev_type() == TorpoDevice.TYPE_COMMON)) {
+            boolean is_success1 = in_dev.addD40Below_dev(out_dev);
+            boolean is_success2 = out_dev.setAbove_dev(in_dev);
+            if (!is_success1 || !is_success2) {
+                // Something Wrong
+            }
+            out_dev.setIs_main_route(true);
+
+            // Success here
+        }
+        // END D40
+
+        // Type 2: COMMONS-M40
+
+        // Kind 1: COMMONS-M40
+        else if ((in_dev.getDev_type() == TorpoDevice.TYPE_COMMON) && (out_dev.getDev_type() == TorpoDevice.TYPE_M40_1)) {
+            boolean is_success1 = in_dev.setBelow_dev(out_dev);
+            boolean is_success2 = out_dev.addM40Above_dev(in_dev);
+            if (!is_success1 || !is_success2) {
+                // Something Wrong
+            }
+        }
+
+        // Kind 2: M40-COMMON
+
+        else if ((in_dev.getDev_type() == TorpoDevice.TYPE_M40_1) && (out_dev.getDev_type() == TorpoDevice.TYPE_COMMON)) {
+            boolean is_success1 = in_dev.setBelow_dev(out_dev);
+            boolean is_success2 = out_dev.setAbove_dev(in_dev);
+            if (!is_success1 || !is_success2) {
+                // Something Wrong
+            }
+            out_dev.setIs_main_route(true);
+            // Success here
+        }
+
+        // END M40
+
+        // Type 3: L40
+
+        // Kind 1: COMMON(S)-L40
+
+        else if ((in_dev.getDev_type() == TorpoDevice.TYPE_COMMON) && (out_dev.getDev_type() == TorpoDevice.TYPE_L40_1)) {
+            boolean is_success1 = in_dev.setBelow_dev(out_dev);
+            boolean is_success2 = out_dev.addL40Above_dev(in_dev);
+            if (!is_success1 || !is_success2) {
+                // Something Wrong
+            }
+        }
+
+        // Kind 2: L40-COMMON(S)
+
+        else if ((in_dev.getDev_type() == TorpoDevice.TYPE_L40_1) && (out_dev.getDev_type() == TorpoDevice.TYPE_COMMON)) {
+            boolean is_success1 = in_dev.addL40Below_dev(out_dev);
+            boolean is_success2 = out_dev.setAbove_dev(in_dev);
+
+            if (!is_success1 || !is_success2) {
+                // Something Wrong
+            }
+
+        } else {
+
+            boolean is_success1 = in_dev.setBelow_dev(out_dev);
+            boolean is_success2 = out_dev.setAbove_dev(in_dev);
+            if (!is_success1 || !is_success2) {
+                // Something Wrong
+            }
+            out_dev.setIs_main_route(in_dev.isIs_main_route());
+        }
+
+        return true;
+    }
+/*
     private boolean LinkAndEraseDevs(TorpoDevice in_dev, TorpoDevice out_dev) {
         // Type1: easiest: COMMON-COMMON
         if (in_dev == null || out_dev == null) {
@@ -185,8 +255,6 @@ public class TorpoRoute {
             if (!is_success1 || !is_success2) {
                 // Something Wrong
             }
-            // Erase in
-            //cache_device_map.remove(in_dev.GetLabel());
             out_dev.setIs_main_route(in_dev.isIs_main_route());
             // Success here
         }
@@ -198,8 +266,6 @@ public class TorpoRoute {
             if (!is_success1 || !is_success2) {
                 // Something Wrong
             }
-            // Erase in
-            //cache_device_map.remove(in_dev.GetLabel());
             out_dev.setIs_side_in(false);
 
             // Success here
@@ -236,9 +302,6 @@ public class TorpoRoute {
             }
             out_dev.setIs_main_route(in_dev.isIs_main_route());
 
-            // Erase OLP-X
-            //cache_device_map.remove(in_dev.GetLabel());
-            // Success here
         }
 
         // Kind 5: COMMON-OLPx
@@ -252,9 +315,6 @@ public class TorpoRoute {
             }
             out_dev.setIs_main_route(in_dev.isIs_main_route());
 
-            // Erase COMMON_dev
-            //cache_device_map.remove(in_dev.GetLabel());
-            // Success here
         }
         // Kind 6: OLP1,OLP2--OLP3
 
@@ -276,9 +336,7 @@ public class TorpoRoute {
             }
             out_dev.setIs_main_route(true);
 
-            // Erase OLP-X
-            //cache_device_map.remove(in_dev.GetLabel());
-            // Success here
+
         }
 
         // Kind 7: OLP3-COMMON
@@ -290,9 +348,6 @@ public class TorpoRoute {
             }
             out_dev.setIs_main_route(false);
 
-            // Erase OLP3
-            //cache_device_map.remove(in_dev);
-            // Success here
         }
 
         // Finish OLP_RELATED
@@ -306,9 +361,7 @@ public class TorpoRoute {
             if (!is_success1 || !is_success2) {
                 // Something Wrong
             }
-            // Erase in
-            //cache_device_map.remove(in_dev.GetLabel());
-            // Success here
+
         }
 
         // Kind 2: D40-COMMONS
@@ -334,9 +387,7 @@ public class TorpoRoute {
             if (!is_success1 || !is_success2) {
                 // Something Wrong
             }
-            // Erase in
-            //cache_device_map.remove(in_dev.GetLabel());
-            // Success here
+
         }
 
         // Kind 2: M40-COMMON
@@ -348,9 +399,6 @@ public class TorpoRoute {
                 // Something Wrong
             }
             out_dev.setIs_main_route(true);
-
-            // Erase in
-            //cache_device_map.remove(in_dev.GetLabel());
 
             // Success here
         }
@@ -367,10 +415,6 @@ public class TorpoRoute {
             if (!is_success1 || !is_success2) {
                 // Something Wrong
             }
-            //out_dev.setIs_many_in(true);
-
-            // Erase in
-            //cache_device_map.remove(in_dev.GetLabel());
         }
 
         // Kind 2: L40-COMMON(S)
@@ -383,16 +427,13 @@ public class TorpoRoute {
                 // Something Wrong
             }
 
-            if (out_dev.isIs_many_in()) {
-                // Erase L40
-                //cache_device_map.remove(in_dev.GetLabel());
-            }
         } else {
             // Exception: Not known pair
         }
 
         return true;
     }
+    */
 
     public int GetDevLevel(String label) {
         if (device_map.containsKey(label)) {

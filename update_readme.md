@@ -27,3 +27,10 @@
 
 + Make the output of the related warnings look better
 + Fix bugs of 5-minute count
+
+## 1029-1 version
+
+### Fix bugs
+
++ Fix bugs of torpo-display in excels
++ Fix bugs of port-info read error, newly supporting some exceptional statement

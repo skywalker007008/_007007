@@ -3,6 +3,7 @@ package torpo;
 import read.resource.Device;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class TorpoDevice extends Device {
     // This Information Used as Device only for Torpo Information
@@ -53,6 +54,7 @@ public class TorpoDevice extends Device {
     private boolean is_side_in;
     // Side Torpo dev
     private TorpoDevice side_dev;
+    private boolean is_flush;
 
     // Judge the dev type by label
     public static final int JudgeDeviceTypeByLabel(String label) {
@@ -68,6 +70,7 @@ public class TorpoDevice extends Device {
         if (board_name.contains("D40") && port == 1) {
             return TorpoDevice.TYPE_D40_1;
         }
+        /*
         if (board_name.contains("OLP")) {
             if (port == 1) {
                 return TorpoDevice.TYPE_OLP_1;
@@ -79,6 +82,7 @@ public class TorpoDevice extends Device {
                 return TorpoDevice.TYPE_OLP_3;
             }
         }
+        */
         return TorpoDevice.TYPE_COMMON;
     }
 
@@ -109,11 +113,97 @@ public class TorpoDevice extends Device {
         this.side_dev = null;
         this.dev_level = -1;
         this.is_side_in = false;
+        this.is_flush = false;
+    }
+
+    public void FlushData(String str) {
+        // Step0: According to conditions to decide whether flush
+
+        if (this.GetLabel().equals("1016-0-15-12D40-22")) {
+            int i = 0 + 1;
+        }
+
+        if (is_flush) {
+            return;
+        }
+
+        if (this.is_side_in) {
+            if (str.equals(above_dev.GetLabel())) {
+                return;
+            }
+        }
+
+        // Step1: update level and main/side
+        if (this.above_dev == null && this.above_dev_map.size() == 0) {
+            this.dev_level = 0;
+            this.is_main_route = true;
+        } else if (this.above_dev != null) {
+            this.dev_level = above_dev.getDev_level() + 1;
+            if (this.side_dev != null) {
+                this.is_main_route = true;
+                if ((this.above_dev.getDev_level() < this.side_dev.getDev_level()) && this.is_side_in) {
+                    this.dev_level = this.side_dev.getDev_level() + 1;
+                }
+            } else {
+                this.is_main_route = this.above_dev.is_main_route;
+            }
+        } else {
+            // temp-remain-same
+            for (String temp_str:
+                 this.above_dev_map.keySet()) {
+                TorpoDevice tp_dev = above_dev_map.get(temp_str);
+                if (this.dev_level < tp_dev.getDev_level() + 1) {
+                    this.dev_level = tp_dev.getDev_level() + 1;
+                }
+            }
+            this.is_main_route = true;
+        }
+
+        this.is_flush = true;
+
+        // Step 2: Flush Other data
+
+        if (this.below_dev == null && this.below_dev_map.size() == 0) {
+            return;
+        }
+
+        if (this.below_dev != null) {
+            this.below_dev.FlushData(this.GetLabel());
+            if (this.side_dev != null && !is_side_in) {
+                this.side_dev.FlushData(GetLabel());
+            }
+            return;
+        }
+        
+        if (this.below_dev_map.size() > 0) {
+            for (String str_below:
+                 below_dev_map.keySet()) {
+                TorpoDevice dev = below_dev_map.get(str_below);
+                dev.FlushData(this.GetLabel());
+            }
+        }
+
     }
 
     public boolean setAbove_dev(TorpoDevice above_dev) {
         if (this.above_dev != null) {
-            // Exception: reset
+            if (this.above_dev.GetLabel().equals(above_dev.GetLabel())) {
+                return false;
+            } else {
+                if (this.side_dev != null) {
+                    if (this.side_dev.GetLabel().equals(above_dev.GetLabel())) {
+                        return false;
+                    } else {
+                        System.out.println("BOTH IN AND OUT");
+                        return false;
+                    }
+                } else {
+                    this.side_dev = above_dev;
+                    this.is_side_in = true;
+                    this.is_main_route = true;
+                    return true;
+                }
+            }
         }
         this.above_dev = above_dev;
         this.dev_level = above_dev.getDev_level() + 1;
@@ -122,7 +212,28 @@ public class TorpoDevice extends Device {
 
     public boolean setBelow_dev(TorpoDevice below_dev) {
         if (this.below_dev != null) {
-            // Exception: reset
+            if (this.below_dev.GetLabel().equals(below_dev.GetLabel())) {
+                return false;
+            } else {
+                if (this.side_dev != null) {
+                    if (this.side_dev.GetLabel().equals(below_dev.GetLabel())) {
+                        return false;
+                    } else {
+                        if (below_dev.GetLabel().equals("1084-0-56-Y2C210-3")) {
+                            int i = 0;
+                        }
+                        System.out.println(this.below_dev.GetLabel() + "-" + below_dev.GetLabel());
+                        System.out.println("BOTH IN AND OUT");
+                        return false;
+                    }
+                } else {
+                    this.side_dev = below_dev;
+                    this.is_side_in = false;
+                    this.is_main_route = true;
+                    below_dev.setIs_main_route(false);
+                    return true;
+                }
+            }
         }
         this.below_dev = below_dev;
         return true;
@@ -153,6 +264,12 @@ public class TorpoDevice extends Device {
             // Exception: SIDE_DEV REDEFINE
         }
         this.side_dev = side_dev;
+
+        if (this.is_side_in) {
+            if (this.dev_level <= side_dev.dev_level) {
+                this.dev_level = side_dev.dev_level + 1;
+            }
+        }
 
         return true;
     }
