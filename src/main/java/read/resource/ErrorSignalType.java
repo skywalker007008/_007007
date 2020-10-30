@@ -32,4 +32,14 @@ public class ErrorSignalType {
         }
         //this.important_value = import_value;
     }
+
+    public boolean equals(Object o) {
+        if (o instanceof ErrorSignalType) {
+            if (this.value_type == ((ErrorSignalType)o).value_type) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

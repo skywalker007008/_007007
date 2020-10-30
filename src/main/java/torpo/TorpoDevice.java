@@ -119,10 +119,6 @@ public class TorpoDevice extends Device {
     public void FlushData(String str) {
         // Step0: According to conditions to decide whether flush
 
-        if (this.GetLabel().equals("1016-0-15-12D40-22")) {
-            int i = 0 + 1;
-        }
-
         if (is_flush) {
             return;
         }

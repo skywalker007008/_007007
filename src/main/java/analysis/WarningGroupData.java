@@ -73,6 +73,49 @@ public class WarningGroupData {
         }
     }
 
+    public ArrayList<WarningFormatData> GetFormatDataList() {
+        return this.warn_data_list;
+    }
+
+    public void RefreshWarnListByLevelOrder() {
+        ArrayList<WarningFormatData> data_list_new = new ArrayList<WarningFormatData>();
+        ArrayList<Integer> level_list = new ArrayList<Integer>();
+        for (WarningFormatData data:
+             this.warn_data_list) {
+            int level = torpo_map.get(data.device_data.GetLabel()).getDev_level();
+            if (data_list_new.size() == 0) {
+                data_list_new.add(data);
+                level_list.add(level);
+                continue;
+            }
+
+            for (int i = 0; i < level_list.size(); i++) {
+                if (level < level_list.get(i)) {
+                    data_list_new.add(i, data);
+                    level_list.add(i, level);
+                    break;
+                } else {
+                    if (i != level_list.size() - 1) {
+                        continue;
+                    } else {
+                        data_list_new.add(data);
+                        level_list.add(level);
+                        break;
+                    }
+                }
+            }
+
+        }
+
+        level_list.clear();
+        warn_data_list.clear();
+        warn_data_list.addAll(data_list_new);
+    }
+
+    public void RefreshWarnListByTimeOrder() {
+
+    }
+
 
 
     public WarningGroupData() {
@@ -114,6 +157,7 @@ public class WarningGroupData {
 
 
     public void MakeGroup(WritableSheet sheet) {
+        this.RefreshWarnListByLevelOrder();
         PrintLabelSheet(sheet);
         try {
             sheet.addCell(new Label(1, 0, this.warning_on_route));

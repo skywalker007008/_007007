@@ -34,3 +34,11 @@
 
 + Fix bugs of torpo-display in excels
 + Fix bugs of port-info read error, newly supporting some exceptional statement
+
+## 1030-1 version
+
+### New function
+
++ Half structure built for the WarnChain Class
++ Reunit the order of warnings by level
++ 

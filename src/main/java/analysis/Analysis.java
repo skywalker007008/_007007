@@ -151,11 +151,13 @@ public class Analysis {
                 }
             }
             // Step 3: Find routes dev in
+            boolean is_find = false;
             for (String route_name:
                  this.torpo_data.route_map.keySet()) {
                 TorpoRoute route = torpo_data.GetRouteByName(route_name);
                 String lab = warn_data.device_data.GetLabel();
                 if (route.IsRouteContainsDevice(warn_data.device_data.GetLabel())) {
+                    is_find = true;
                     TorpoDevice torpo_dev = route.GetTorpoDeviceByLabel(warn_data.device_data.GetLabel());
                     // Step 4: Find whether this line has existed
                     if (this.cache_related_warning_data.containsKey(route_name)) {
@@ -173,6 +175,15 @@ public class Analysis {
                 }
                 // else : no handling
             }
+            if (!is_find) {
+                System.out.println("Unfound PortId: " + warn_data.device_data.GetLabel());
+            }
+        }
+        // Step 4: Add left into
+        HashSet<String> set = new HashSet<String>(cache_related_warning_data.keySet());
+        for (String str:
+             set) {
+            AddGroupWarningsToList(str);
         }
     }
 

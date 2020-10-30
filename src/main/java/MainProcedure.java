@@ -5,11 +5,11 @@ import torpo.TorpoData;
 public class MainProcedure {
     public static void main(String args[]) {
 
-        //System.out.println("Excel Data Loading...");
-        //WarningData excel_data = new WarningData(1000);
-        //excel_data.ReadExcelDataNew("C://Users//Administrator//IdeaProjects//_007007/test_part.xls");
+        System.out.println("Excel Data Loading...");
+        WarningData excel_data = new WarningData(1000);
+        excel_data.ReadExcelDataNew("C://Users//Administrator//IdeaProjects//_007007/test_part.xls");
         //excel_data.ReadExcelDataNew("C://Users//Administrator//IdeaProjects//_007007/test_new.xls");
-        //System.out.println("Excel Data Loaded Success!");
+        System.out.println("Excel Data Loaded Success!");
         // Test Almost Finished
 
         System.out.println("Torpo Information Loading...");
@@ -18,10 +18,10 @@ public class MainProcedure {
         System.out.println("Torpo Information Loaded Success!");
         // Tested pass, but unable to visualize
 
-        //System.out.println("Analysing...");
-        //Analysis analyse = new Analysis(excel_data, torpo_data);
-        //analyse.AnalysisData();
-        //System.out.println("Analyse finished!");
+        System.out.println("Analysing...");
+        Analysis analyse = new Analysis(excel_data, torpo_data);
+        analyse.AnalysisData();
+        System.out.println("Analyse finished!");
 
     }
 
