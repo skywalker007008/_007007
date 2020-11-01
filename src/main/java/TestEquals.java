@@ -31,5 +31,9 @@ public class TestEquals {
         } else {
             System.out.println("FALSE");
         }
+
+        String str = "5-94-6-8";
+        String[] sstr = str.split("-");
+        System.out.println(sstr.length);
     }
 }

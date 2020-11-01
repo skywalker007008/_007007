@@ -1,6 +1,8 @@
 import analysis.Analysis;
 import read.WarningData;
 import torpo.TorpoData;
+import warn_relation.RelatedWarning;
+import warn_relation.WarningRuleFinding;
 
 public class MainProcedure {
     public static void main(String args[]) {
@@ -22,6 +24,13 @@ public class MainProcedure {
         Analysis analyse = new Analysis(excel_data, torpo_data);
         analyse.AnalysisData();
         System.out.println("Analyse finished!");
+
+        System.out.println("Finding Chain Message...");
+        WarningRuleFinding rule_find = new WarningRuleFinding(analyse);
+        rule_find.SetArgsForFinding(1, 0.1);
+
+        rule_find.FindRulesFromOriginData();
+        System.out.println("Finding finished!");
 
     }
 

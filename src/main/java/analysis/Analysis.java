@@ -68,6 +68,8 @@ public class Analysis {
         GroupRelevantWarnings();
         // Step 3: Add uncached warnings together
         RejoinCachedWarnings();
+        // Step 4: Flush repeated GroupData
+        FlushRepeatWarnings();
         // Step 4: (Optional)PrintStack of the warnings relationship
         AnalysisResultPrintOut();
     }
@@ -190,9 +192,31 @@ public class Analysis {
     public void RejoinCachedWarnings() {
 
     }
+    
+    public void FlushRepeatWarnings() {
+        HashMap<String, WarningGroupData> id_map =
+                new HashMap<String, WarningGroupData>();
+        for (WarningGroupData data:
+             related_warning_data) {
+            String id = data.GetIdTimeLabel();
+            if (id_map.containsKey(id)) {
+                if (data.GetIdLevelLabel().equals(data.GetIdTimeLabel())) {
+                    id_map.put(id, data);
+                }
+            } else {
+                id_map.put(id, data);
+            }
+        }
+        related_warning_data.clear();
+        for (String id:
+             id_map.keySet()) {
+            WarningGroupData data = id_map.get(id);
+            related_warning_data.add(data);
+        }
+    }
 
     public void AnalysisResultPrintOut() {
-        File analyse_file = new File("Analysis_NEW.xls");
+        File analyse_file = new File("Analysis_NEW02.xls");
         try {
             analyse_file.createNewFile();
             WritableWorkbook workbook = Workbook.createWorkbook(analyse_file);
@@ -224,8 +248,9 @@ public class Analysis {
         WarningGroupData group_data = new WarningGroupData(line_name, warn_list, tp_list);
 
         related_warning_data.add(group_data);
-        ArrayList<WarningFormatData> new_warn_list;
-        HashMap<String, TorpoDevice> new_tp_list;
+        group_data.CountLabel();
+        //ArrayList<WarningFormatData> new_warn_list;
+        //HashMap<String, TorpoDevice> new_tp_list;
 
         //Pair<ArrayList<WarningFormatData>, HashMap<String, TorpoDevice>> pair_lists = group_data.MakeGroup();
         cache_related_warning_data.remove(line_name);

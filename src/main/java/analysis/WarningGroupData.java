@@ -46,6 +46,10 @@ public class WarningGroupData {
 
     private int min_level;
 
+    private String id_time_label;
+
+    private String id_level_label;
+
     private HashMap<String, TorpoDevice> start_devs;
 
     /*
@@ -72,6 +76,24 @@ public class WarningGroupData {
             e.printStackTrace();
         }
     }
+
+    public String CountIdLabel() {
+        String str = new String();
+        for (WarningFormatData data:
+             this.warn_data_list) {
+            str = str + String.valueOf(data.order) + "-";
+        }
+        return str;
+    }
+
+    public String GetIdTimeLabel() {
+        return this.id_time_label;
+    }
+
+    public String GetIdLevelLabel() {
+        return this.id_time_label;
+    }
+
 
     public ArrayList<WarningFormatData> GetFormatDataList() {
         return this.warn_data_list;
@@ -155,9 +177,13 @@ public class WarningGroupData {
         this.sheet = sheet;
     }
 
+    public void CountLabel() {
+        this.id_time_label = CountIdLabel();
+        this.RefreshWarnListByLevelOrder();
+        this.id_level_label = CountIdLabel();
+    }
 
     public void MakeGroup(WritableSheet sheet) {
-        this.RefreshWarnListByLevelOrder();
         PrintLabelSheet(sheet);
         try {
             sheet.addCell(new Label(1, 0, this.warning_on_route));

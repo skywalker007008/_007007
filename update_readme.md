@@ -41,4 +41,10 @@
 
 + Half structure built for the WarnChain Class
 + Reunit the order of warnings by level
-+ 
+
+## 1101-1 version
+
+### New function
+
++ Delete repeated group warnings
++ Count the result of related rules, according to support and belief level

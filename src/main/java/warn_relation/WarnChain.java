@@ -23,6 +23,9 @@ public class WarnChain {
      */
 
     public WarnChain(ArrayList<WarningFormatData> format_data) {
+        format_chain = new ArrayList<WarningFormatData>();
+        error_chain = new ArrayList<ErrorSignalType>();
+        port_chain = new ArrayList<String>();
         format_chain.addAll(format_data);
         for (WarningFormatData tmp_data:
                 format_chain) {
@@ -31,7 +34,7 @@ public class WarnChain {
             error_chain.add(type);
             port_chain.add(str);
         }
-        this.CountTypeString();
+        chain_type_label = this.CountTypeString();
     }
 
     public WarnChain() {
@@ -58,15 +61,20 @@ public class WarnChain {
      * Group Big Chains into different parts
      */
     public ArrayList<WarnChain> AnalyseChain(int max_length) {
+        ArrayList<WarnChain> chains = new ArrayList<WarnChain>();
         // Step 1: Place where to start
         for (int i = 0; i < this.error_chain.size(); i++) {
             ArrayList<WarningFormatData> tmp_format_data = new ArrayList<WarningFormatData>();
-            ArrayList<ErrorSignalType> tmp_err_data = new ArrayList<ErrorSignalType>();
-            ArrayList<String> tmp_err
             for (int j = 0; j < max_length; j++) {
-
+                if (i + j >= this.error_chain.size()) {
+                    break;
+                }
+                tmp_format_data.add(format_chain.get(i + j));
+                WarnChain chain = new WarnChain(tmp_format_data);
+                chains.add(chain);
             }
         }
+        return chains;
     }
 
     public int GetSizeOfChain() {
@@ -82,7 +90,7 @@ public class WarnChain {
     }
 
     public String CountTypeString() {
-        String str = "label-";
+        String str = new String();
         for (ErrorSignalType err_type:
              error_chain) {
             str = str + err_type.string_type + "-";
