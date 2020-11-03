@@ -27,11 +27,11 @@ public class Analysis {
     // Frequency Warning Time Limit
     public static final int FREQUENT_WARNINGS_TIME_LIMIT = 1800;
     // Related Warning Time Limit
-    public static final int RELATED_WARNINGS_TIME_LIMIT = 1800;
+    public static final int RELATED_WARNINGS_TIME_LIMIT = 450;
 
     // Cache of Frequent Warnings:map
     // TODOLIST: Modify Device into its only -label
-    public HashMap<Pair<String, Integer>, WarningFormatData> cache_frequent_warning_data;
+    private HashMap<Pair<String, Integer>, WarningFormatData> cache_frequent_warning_data;
     // Data expected to handle of group warnings
     public ArrayList<WarningFormatData> group_warning_data;
     // Data handled of frequent warnings
@@ -216,7 +216,7 @@ public class Analysis {
     }
 
     public void AnalysisResultPrintOut() {
-        File analyse_file = new File("Analysis_NEW02.xls");
+        File analyse_file = new File("Analysis_NEW450.xls");
         try {
             analyse_file.createNewFile();
             WritableWorkbook workbook = Workbook.createWorkbook(analyse_file);

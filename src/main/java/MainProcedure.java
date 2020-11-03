@@ -1,9 +1,8 @@
 import analysis.Analysis;
 import read.WarningData;
 import torpo.TorpoData;
-import warn_relation.RelatedWarning;
-import warn_relation.WarningRuleFinding;
 
+import warn_relation.WarningRuleFinding;
 public class MainProcedure {
     public static void main(String args[]) {
 
@@ -27,7 +26,7 @@ public class MainProcedure {
 
         System.out.println("Finding Chain Message...");
         WarningRuleFinding rule_find = new WarningRuleFinding(analyse);
-        rule_find.SetArgsForFinding(1, 0.1);
+        rule_find.SetArgsForFinding(5, 0.5);
 
         rule_find.FindRulesFromOriginData();
         System.out.println("Finding finished!");
