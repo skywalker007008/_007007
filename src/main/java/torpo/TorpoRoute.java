@@ -28,6 +28,7 @@ public class TorpoRoute {
     private HashMap<String, TorpoDevice> cache_device_map;
     // Used for Visualize
     private VisualTorpo visual;
+    private HashMap<Integer, HashMap<String, TorpoDevice>> painting_map;
 
     public TorpoRoute() {
         device_map = new HashMap<String, TorpoDevice>();
@@ -36,6 +37,7 @@ public class TorpoRoute {
         entry_device_map = new HashMap<Integer, HashMap<String, TorpoDevice>>();
         exit_device_map = new HashMap<Integer, HashMap<String, TorpoDevice>>();
         cache_device_map = new HashMap<String, TorpoDevice>();
+        painting_map = new HashMap<Integer, HashMap<String, TorpoDevice>>();
     }
 
     public static final String[] GetRouteNameBySheet(Sheet sheet) {
@@ -112,13 +114,13 @@ public class TorpoRoute {
                 // Not Exists, first entry or something wrong
                 if (device_map.containsKey(in_label)) {
                     in_dev = device_map.get(in_label);
-                    in_dev.setDev_level(0, route_type);
+                    in_dev.SetLevelOfRouteType(0, route_type);
                 } else {
 
                     in_dev = new TorpoDevice();
                     int dev_type = TorpoDevice.JudgeDeviceTypeByLabel(in_label);
                     in_dev.setDev_type(dev_type);
-                    in_dev.setDev_level(0, route_type);
+                    in_dev.SetLevelOfRouteType(0, route_type);
                     in_dev.ReadDeviceLine(in_device_line_info);
                     in_dev.ReadDeviceInfo(in_device_info);
                     in_dev.CountOnlyLabel();
@@ -165,8 +167,8 @@ public class TorpoRoute {
 
             LinkAndEraseDevs(in_dev, out_dev, route_type);
 
-            if (this.level_map.get(route_type) < in_dev.getDev_level(route_type)) {
-                int level = in_dev.getDev_level(route_type);
+            if (this.level_map.get(route_type) < in_dev.GetLevelOfRouteType(route_type)) {
+                int level = in_dev.GetLevelOfRouteType(route_type);
                 this.level_map.put(route_type, level);
             }
 
@@ -176,8 +178,9 @@ public class TorpoRoute {
     }
 
     private boolean LinkAndEraseDevs(TorpoDevice in_dev, TorpoDevice out_dev, int route_type) {
-        boolean is_success1 = in_dev.SetNextDev(out_dev, route_type);
-        boolean is_success2 = out_dev.SetNextDev(in_dev, route_type);
+        boolean is_success1 = in_dev.SetBelowDev(out_dev, route_type);
+        boolean is_success2 = out_dev.SetAboveDev(in_dev, route_type);
+        //boolean is_success2 = out_dev.SetNextDev(in_dev, route_type);
 
         if (is_success1 && is_success2) {
             return true;
@@ -205,59 +208,36 @@ public class TorpoRoute {
 
     public void PrintOutRouteMsg(WritableSheet sheet) {
         visual = new VisualTorpo(sheet);
-        painting_map = new HashMap<String, TorpoDevice>();
 
-        UpdateTorpoData();
+        for (int i = 0; i < 4; i++) {
+            if (!TorpoRoute.IsDirectionExisted(this.stat, i)) {
+                continue;
+            }
+            UpdateTorpoData(i);
+        }
 
         for (String str:
-                entry_device_map.keySet()) {
-            TorpoDevice dev = entry_device_map.get(str);
+                device_map.keySet()) {
+            TorpoDevice tp_dev = device_map.get(str);
+            visual.AddDevInfo(tp_dev);
+        }
+        visual.PrintGlobalTorpo();
+    }
 
-            this.PrintTorpoDevMsg(str);
+    private void UpdateTorpoData(int route_type) {
+        HashMap<String, TorpoDevice> tmp_entry_map = entry_device_map.get(route_type);
+        for (String str:
+                tmp_entry_map.keySet()) {
+            if (tmp_entry_map.get(str) == null) {
+                continue;
+            }
+            TorpoDevice dev = tmp_entry_map.get(str);
+            //dev.SetLevelOfRouteType(0, route_type);
+            dev.FlushData(0, route_type);
         }
     }
 
-    public void UpdateTorpoData() {
-        for (int route_type:
-             entry_device_map.keySet()) {
+    private void PrintTorpoDevMsg(String str, int route_type) {
 
-        }
-        for (String str:
-                entry_device_map.keySet()) {
-            TorpoDevice dev = entry_device_map.get(str);
-
-            dev.FlushData(null);
-        }
-    }
-
-    private void PrintTorpoDevMsg(String str) {
-        int route_type;
-        if (painting_map.containsKey(str)) {
-            return;
-        }
-        TorpoDevice dev = device_map.get(str);
-        painting_map.put(str, device_map.get(str));
-
-        visual.PrintTorpo(str, dev.getDev_level(route_type));
-
-        if ((dev.getDev_type() == TorpoDevice.TYPE_L40_1) ||
-                (dev.getDev_type() == TorpoDevice.TYPE_D40_1)) {
-            for (String str2 :
-                    dev.GetBelowDevs().keySet()) {
-                this.PrintTorpoDevMsg(str2);
-            }
-        }
-        else {
-            // Get to the end
-            if (dev.getBelow_dev() == null) {
-                return;
-            }
-            String str2 = dev.getBelow_dev().GetLabel();
-            this.PrintTorpoDevMsg(str2);
-            if (!dev.isIs_side_in() && dev.getSide_dev() != null) {
-                String str3 = dev.getSide_dev().GetLabel();
-                this.PrintTorpoDevMsg(str3);
-            }
-        }
     }
 }

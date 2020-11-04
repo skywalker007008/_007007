@@ -61,3 +61,15 @@
 
 + Finish the torpo re-construction
 + Enable to group the warning_lists and make different kinds of list
+
+## 1104-2 version
+
+### Finish Parts
+
++ Finish the reconstruct of torpo_device
++ For torpoDevice, only Visual Left
+
+### What's next?
+
++ Modify the warnings_read
++ Enable to group the warning_lists and make different kinds of list

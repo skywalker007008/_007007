@@ -7,18 +7,13 @@ import torpo.TorpoDevice;
 import java.util.HashMap;
 
 public class VisualTorpo {
-    private HashMap<Integer, HashMap<String, TorpoDevice>> painting_map;
-
     private WritableSheet output_sheet;
 
     private HashMap<Integer, Integer> output_map;
 
-    private int has;
-
     public VisualTorpo(WritableSheet sheet) {
         output_sheet = sheet;
         output_map = new HashMap<Integer, Integer>();
-        painting_map = new HashMap<Integer, HashMap<String, TorpoDevice>>();
     }
 
     public void PrintTorpo(String str, int line) {
@@ -37,6 +32,14 @@ public class VisualTorpo {
             System.out.println(str);
         }
         output_map.put(line, column+1);
+    }
+
+    public void AddDevInfo(TorpoDevice dev) {
+
+    }
+
+    public void PrintGlobalTorpo() {
+
     }
 
 
