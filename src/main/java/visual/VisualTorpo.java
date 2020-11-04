@@ -13,6 +13,8 @@ public class VisualTorpo {
 
     private HashMap<Integer, Integer> output_map;
 
+    private int has;
+
     public VisualTorpo(WritableSheet sheet) {
         output_sheet = sheet;
         output_map = new HashMap<Integer, Integer>();
