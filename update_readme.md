@@ -48,3 +48,16 @@
 
 + Delete repeated group warnings
 + Count the result of related rules, according to support and belief level
+
+## 1104-1 version
+
+### Modified Contents
+
++ Have to re-construct the TorpoDevice and TorpoRoute
++ New ways to handle the torpo-vision
++ New Branch of it
+
+### What's next?
+
++ Finish the torpo re-construction
++ Enable to group the warning_lists and make different kinds of list

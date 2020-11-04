@@ -1,13 +1,14 @@
 package visual;
 
-import jxl.Sheet;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
+import torpo.TorpoDevice;
 
-import java.io.OutputStream;
 import java.util.HashMap;
 
 public class VisualTorpo {
+    private HashMap<Integer, HashMap<String, TorpoDevice>> painting_map;
+
     private WritableSheet output_sheet;
 
     private HashMap<Integer, Integer> output_map;
@@ -15,6 +16,7 @@ public class VisualTorpo {
     public VisualTorpo(WritableSheet sheet) {
         output_sheet = sheet;
         output_map = new HashMap<Integer, Integer>();
+        painting_map = new HashMap<Integer, HashMap<String, TorpoDevice>>();
     }
 
     public void PrintTorpo(String str, int line) {

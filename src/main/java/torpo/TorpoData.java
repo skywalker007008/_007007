@@ -29,10 +29,11 @@ public class TorpoData {
             out_file.createNewFile();
             // jxl提供的Workbook类
             Workbook wb = Workbook.getWorkbook(is);
-            WritableWorkbook wb_out = Workbook.createWorkbook(out_file);
+
             // Excel的页签数量
             int sheet_size = wb.getNumberOfSheets();
-            for (int index = 0; index < sheet_size; index++) {
+            /*
+            for (int index = 0; index < sheet_size - 1; index++) {
                 // 每个页签创建一个Sheet对象
                 Sheet sheet = wb.getSheet(index);
                 TorpoRoute route = new TorpoRoute();
@@ -44,21 +45,46 @@ public class TorpoData {
                 route.PrintOutRouteMsg(sheet_out);
 
             }
-            if (sheet_size > 0) {
-                wb_out.write();
-
+            */
+            for (int i = 0; i < sheet_size - 1; i++) {
+                Sheet sheet = wb.getSheet(i);
+                String[] route_name = TorpoRoute.GetRouteNameBySheet(sheet);
+                TorpoRoute route;
+                if (route_map.containsKey(route_name[0])) {
+                    route = route_map.get(route_name[0]);
+                    route.ReadTorpoRoute(sheet, true);
+                } else if (route_map.containsKey(route_name[1])) {
+                    route = route_map.get(route_name[1]);
+                    route.ReadTorpoRoute(sheet, false);
+                } else {
+                    route = new TorpoRoute();
+                    route.ReadTorpoRoute(sheet, true);
+                    route_map.put(route_name[0], route);
+                }
             }
-            wb_out.close();
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (BiffException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (WriteException e) {
+        }
+        // Output
+
+        try {
+            WritableWorkbook wb_out = Workbook.createWorkbook(out_file);
+            for (String str:
+                 route_map.keySet()) {
+                TorpoRoute route = route_map.get(str);
+                WritableSheet sheet = wb_out.createSheet(route.GetRouteLabel(), 0);
+                route.PrintOutRouteMsg(sheet);
+            }
+            wb_out.write();
+            wb_out.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public TorpoRoute GetRouteByName(String name) {
@@ -67,19 +93,5 @@ public class TorpoData {
         } else {
             return null;
         }
-    }
-
-    public Pair<String, Integer> FindDevRouteAndLevel(String label) {
-        for (String key: this.route_map.keySet()
-             ) {
-           TorpoRoute torpo_route = route_map.get(key);
-           int level = torpo_route.GetDevLevel(label);
-           if (level >= 0) {
-               Pair<String, Integer> pair = new Pair<String, Integer>(key, level);
-               return pair;
-           }
-        }
-        Pair<String, Integer> pair = new Pair<String, Integer>(null, -1);
-        return pair;
     }
 }
