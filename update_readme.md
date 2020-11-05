@@ -73,3 +73,14 @@
 
 + Modify the warnings_read
 + Enable to group the warning_lists and make different kinds of list
+
+## 1105-1 version
+
+### Finish Parts
+
++ still 1104-2 version, but fix some torpo_bug
+
+### What's next?
+
++ Build hidden level, for grouping
++ fix some little bugs

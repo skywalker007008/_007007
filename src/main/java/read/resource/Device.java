@@ -1,11 +1,5 @@
 package read.resource;
 
-// 0-一二三四五-4-X3L401-1(IN/OUT)，数字依次为：
-// 0-子架，
-// 4-板卡号，
-// X3L401-板卡名称，
-// 1(IN/OUT)-端口号
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,12 +83,9 @@ public class Device {
 
         if (match.find()) {
             this.subrack = Integer.parseInt(match.group(1));
-            //this.subrack_info = match.group(2);
             this.board_num = Integer.parseInt(match.group(4));
             this.board_name = match.group(5);
             this.port_num = Integer.parseInt(match.group(7));
-            //this.port_info = match.group(8);
-            //this.extra_info = match.group(10);
             this.extra_info = info.substring(0, match.end());
 
             return true;

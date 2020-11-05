@@ -9,8 +9,8 @@ import java.util.HashMap;
 public class TorpoRoute {
     // Directions of Torpo
     public static final int POSITIVE_ODD = 0;
-    public static final int POSITIVE_EVEN = 1;
-    public static final int NEGATIVE_ODD = 2;
+    public static final int POSITIVE_EVEN = 2;
+    public static final int NEGATIVE_ODD = 1;
     public static final int NEGATIVE_EVEN = 3;
 
     // Which level has been logged in
@@ -42,10 +42,10 @@ public class TorpoRoute {
 
     public static final String[] GetRouteNameBySheet(Sheet sheet) {
         String[] str = sheet.getName().split("-");
-        String[] temp_str = str[0].split("H");
-        String start_str = temp_str[0];
-        temp_str = str[1].split("H");
-        String end_str = temp_str[0];
+        String[] temp_str = str[2].split("H");
+        String start_str = temp_str[1];
+        temp_str = str[4].split("H");
+        String end_str = temp_str[1];
         str = new String[2];
         str[0] = start_str + "-" + end_str;
         str[1] = end_str + "-" + start_str;
@@ -53,7 +53,7 @@ public class TorpoRoute {
     }
 
     public static final boolean IsDirectionExisted(int stat, int direction) {
-        return (((stat >> direction) | 1) == 1);
+        return (((stat >> direction) & 1) == 1);
     }
 
     public String GetRouteLabel() {
@@ -167,13 +167,10 @@ public class TorpoRoute {
 
             LinkAndEraseDevs(in_dev, out_dev, route_type);
 
-            if (this.level_map.get(route_type) < in_dev.GetLevelOfRouteType(route_type)) {
-                int level = in_dev.GetLevelOfRouteType(route_type);
-                this.level_map.put(route_type, level);
-            }
-
         }
+        cache_device_map.clear();
         this.entry_device_map.put(route_type, temp_entry_device_map);
+        this.stat = this.stat | (1 << route_type);
         return true;
     }
 
@@ -222,6 +219,7 @@ public class TorpoRoute {
             visual.AddDevInfo(tp_dev);
         }
         visual.PrintGlobalTorpo();
+        System.out.println("Finish " + this.route_name);
     }
 
     private void UpdateTorpoData(int route_type) {
@@ -234,10 +232,15 @@ public class TorpoRoute {
             TorpoDevice dev = tmp_entry_map.get(str);
             //dev.SetLevelOfRouteType(0, route_type);
             dev.FlushData(0, route_type);
+
         }
     }
 
     private void PrintTorpoDevMsg(String str, int route_type) {
 
+    }
+
+    public static final int GetRouteOtherSide(int route_type) {
+        return (route_type + 2) % 4;
     }
 }
