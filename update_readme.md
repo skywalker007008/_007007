@@ -84,3 +84,9 @@
 
 + Build hidden level, for grouping
 + fix some little bugs
+
+## 1105-2 version
+
+### What's new?
+
++ Add line info in the torpo

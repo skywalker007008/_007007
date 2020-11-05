@@ -175,8 +175,9 @@ public class TorpoRoute {
     }
 
     private boolean LinkAndEraseDevs(TorpoDevice in_dev, TorpoDevice out_dev, int route_type) {
-        boolean is_success1 = in_dev.SetBelowDev(out_dev, route_type);
-        boolean is_success2 = out_dev.SetAboveDev(in_dev, route_type);
+        int line = in_dev.GetLineNum(route_type);
+        boolean is_success1 = in_dev.SetBelowDev(out_dev, route_type, line);
+        boolean is_success2 = out_dev.SetAboveDev(in_dev, route_type, line);
         //boolean is_success2 = out_dev.SetNextDev(in_dev, route_type);
 
         if (is_success1 && is_success2) {
