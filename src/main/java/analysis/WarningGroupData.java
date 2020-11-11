@@ -4,7 +4,6 @@ import javafx.util.Pair;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import read.WarningFormatData;
-import read.resource.Device;
 import read.resource.MyTime;
 import torpo.TorpoDevice;
 import visual.VisualTorpo;

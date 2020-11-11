@@ -2,7 +2,6 @@ import analysis.Analysis;
 import read.WarningData;
 import torpo.TorpoData;
 
-import warn_relation.WarningRuleFinding;
 public class MainProcedure {
     public static void main(String args[]) {
 
@@ -11,7 +10,7 @@ public class MainProcedure {
         torpo_data.ReadTorpoInfo("/home/skywalker/桌面/G410/_007007/torpo_new.xls");
         System.out.println("Torpo Information Loaded Success!");
         // Tested pass, but unable to visualize
-/*
+
         System.out.println("Excel Data Loading...");
         WarningData excel_data = new WarningData(1000);
         excel_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/test_part.xls");
@@ -23,16 +22,16 @@ public class MainProcedure {
         Analysis analyse = new Analysis(excel_data, torpo_data);
         analyse.AnalysisData();
         System.out.println("Analyse finished!");
-
+/*
         System.out.println("Finding Chain Message...");
         WarningRuleFinding rule_find = new WarningRuleFinding(analyse);
         rule_find.SetArgsForFinding(5, 0.5);
 
         rule_find.FindRulesFromOriginData();
         System.out.println("Finding finished!");
+*/
 
 
- */
     }
 
 }
