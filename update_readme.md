@@ -93,3 +93,17 @@
 
 ## 1109: Clone to windows
 ## 1110: Re-design the algorithms
+
+## 1112-1 version
+
+### What's new?
+
++ Rebuild some basic structure of clusters-finding
++ Build some basic reference library
++ Leave some core parts to be implemented
+
+### What's next?
+
++ Finish GraphNode.ReadGroupData()
++ Finish K-means.Cluster()
++ Repeated testing, until the result seems good.

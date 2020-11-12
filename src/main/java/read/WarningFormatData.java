@@ -1,8 +1,8 @@
 package read;
 
-import read.resource.Device;
-import read.resource.ErrorSignalType;
-import read.resource.MyTime;
+import resource.Device;
+import resource.ErrorSignalType;
+import resource.MyTime;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,7 +1,6 @@
 package read;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,9 +9,9 @@ import java.io.InputStream;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
-import read.resource.Device;
-import read.resource.ErrorSignalType;
-import read.resource.MyTime;
+import resource.Device;
+import resource.ErrorSignalType;
+import resource.MyTime;
 
 public class WarningData {
     public ArrayList<WarningFormatData> data_list;

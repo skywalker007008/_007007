@@ -1,9 +1,12 @@
 import analysis.Analysis;
 import read.WarningData;
+import resource.TypeLib;
 import torpo.TorpoData;
 
 public class MainProcedure {
     public static void main(String args[]) {
+
+        TypeLib lib = new TypeLib();
 
         System.out.println("Torpo Information Loading...");
         TorpoData torpo_data = new TorpoData();

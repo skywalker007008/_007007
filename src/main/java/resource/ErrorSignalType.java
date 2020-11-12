@@ -1,4 +1,4 @@
-package read.resource;
+package resource;
 
 public class ErrorSignalType {
 

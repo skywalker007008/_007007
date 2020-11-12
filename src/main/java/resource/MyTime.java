@@ -1,4 +1,4 @@
-package read.resource;
+package resource;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

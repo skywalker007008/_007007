@@ -1,8 +1,7 @@
 package warn_relation;
 
-import analysis.WarningGroupData;
 import read.WarningFormatData;
-import read.resource.ErrorSignalType;
+import resource.ErrorSignalType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

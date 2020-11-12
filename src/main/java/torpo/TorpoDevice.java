@@ -1,7 +1,7 @@
 package torpo;
 
 import javafx.util.Pair;
-import read.resource.Device;
+import resource.Device;
 import java.util.HashMap;
 import java.util.HashSet;
 
