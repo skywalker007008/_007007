@@ -1,6 +1,7 @@
 package analysis.cluster;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
  * The cluster that we find
@@ -44,6 +45,11 @@ public class Cluster {
 
     public void UpdateCoordinate() {
         // To be implemented
+        this.coordinate.ClearCoordinate();
+
+        for (GroupNode node: this.nodes) {
+            Coordinate cord = node.GetCoordinate();
+        }
     }
 
     public double GetEValue() {

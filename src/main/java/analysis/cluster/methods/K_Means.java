@@ -56,7 +56,7 @@ public class K_Means {
             Cluster cluster = new Cluster(i);
             i++;
             cluster.SetCoordinate(node.GetCoordinate());
-            node.SetCluster(cluster);
+            //node.SetCluster(cluster);
         }
 
         // Step 2: According to the iter_times to make clusters
@@ -100,7 +100,19 @@ public class K_Means {
     }
 
     private ArrayList<GroupNode> ChooseInitialNodes() {
-        return null;
+        ArrayList<GroupNode> node_list = new ArrayList<GroupNode>();
+        int size = nodes.size();
+        int iter = size / (cluster_num - 1);
+        if (cluster_num == 1) {
+            GroupNode node = nodes.get(0);
+            node_list.add(node);
+            return node_list;
+        }
+        for (int i = 0; i < cluster_num; i++) {
+            GroupNode node = nodes.get(i * iter);
+            node_list.add(node);
+        }
+        return node_list;
     }
 
 

@@ -119,3 +119,9 @@
 + Finish Cluster.Update()
 + Finish K-means.ChooseInitialNodes()
 + Using different values to test the answer of k-means
+
+## 1113-2 version
+
+### What's new?
+
++ Finish Coding of k-means, left test of k-means

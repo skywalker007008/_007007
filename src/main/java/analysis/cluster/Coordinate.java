@@ -201,6 +201,71 @@ public class Coordinate {
         }
     }
 
+    public void ClearCoordinate() {
+        this.warn_type_ratio.clear();
+        this.pair_type_ratio.clear();
+        this.board_type_ratio.clear();
+        this.level_gap = 0.0;
+    }
+
+    public void AddCoordinate(Coordinate cord) {
+        HashMap<Integer, Double> cord_warn_ratio = cord.GetWarnTypeRatioMap();
+        HashMap<Integer, Double> cord_board_ratio = cord.GetBoardTypeRatioMap();
+        HashMap<Integer, Double> cord_pair_ratio = cord.GetPairTypeRatioMap();
+
+        for (int type: cord_warn_ratio.keySet()) {
+            double cord_value = cord_warn_ratio.get(type);
+            if (this.warn_type_ratio.containsKey(type)) {
+                double prev_value = warn_type_ratio.get(type);
+                warn_type_ratio.put(type, prev_value + cord_value);
+            } else {
+                warn_type_ratio.put(type, cord_value);
+            }
+        }
+
+        for (int type: cord_board_ratio.keySet()) {
+            double cord_value = cord_board_ratio.get(type);
+            if (this.board_type_ratio.containsKey(type)) {
+                double prev_value = board_type_ratio.get(type);
+                board_type_ratio.put(type, prev_value + cord_value);
+            } else {
+                board_type_ratio.put(type, cord_value);
+            }
+        }
+
+        for (int type: cord_pair_ratio.keySet()) {
+            double cord_value = cord_pair_ratio.get(type);
+            if (this.pair_type_ratio.containsKey(type)) {
+                double prev_value = pair_type_ratio.get(type);
+                pair_type_ratio.put(type, prev_value + cord_value);
+            } else {
+                pair_type_ratio.put(type, cord_value);
+            }
+        }
+        this.level_gap += cord.GetLevelGap();
+    }
+
+    public void DivideConstant(int num) {
+
+        for (int type: warn_type_ratio.keySet()) {
+            double value = warn_type_ratio.get(type);
+            warn_type_ratio.put(type, value / num);
+        }
+
+        for (int type: pair_type_ratio.keySet()) {
+            double value = pair_type_ratio.get(type);
+            pair_type_ratio.put(type, value / num);
+        }
+
+        for (int type: board_type_ratio.keySet()) {
+            double value = board_type_ratio.get(type);
+            board_type_ratio.put(type, value / num);
+        }
+
+        this.level_gap /= num;
+
+    }
+
     class Coefficient {
         public static final double COEF_FOR_WARNS = 0.1;
 
