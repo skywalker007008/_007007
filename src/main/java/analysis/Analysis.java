@@ -1,5 +1,6 @@
 package analysis;
 
+import analysis.cluster.FindClusters;
 import javafx.util.Pair;
 import jxl.Workbook;
 import jxl.write.WritableSheet;
@@ -66,13 +67,29 @@ public class Analysis {
         CombineFrequentWarnings();
         // Step 2: Find Relevant Warnings
         GroupRelevantWarnings();
+        // Step 3: Use Cluster Methods to find some clusters
+        FindClustersByMethod("K-Means");
+
+
         // Step 3: Add uncached warnings together
-        RejoinCachedWarnings();
+        //RejoinCachedWarnings();
         // Step 4: (Optional)PrintStack of the warnings relationship
-        AnalysisResultPrintOut();
+        //AnalysisResultPrintOut();
+
+
     }
 
-    public void CombineFrequentWarnings() {
+    private void FindClustersByMethod(String method) {
+        FindClusters find_cluster = new FindClusters();
+        for (WarningGroupData data:
+             this.related_warning_data) {
+            find_cluster.AddNewGroupData(data);
+        }
+        find_cluster.FindClustersByMethod(method, 5, 2);
+
+    }
+
+    private void CombineFrequentWarnings() {
         int max_volume = this.origin_data.data_list.size();
         try {
             // Step 1: Iterator each warning data
@@ -132,7 +149,7 @@ public class Analysis {
         cache_frequent_warning_data.clear();
     }
 
-    public void GroupRelevantWarnings() {
+    private void GroupRelevantWarnings() {
         // Step 1: Find warning data from left warnings
         for (WarningFormatData warn_data:
              group_warning_data) {
@@ -187,11 +204,7 @@ public class Analysis {
         }
     }
 
-    public void RejoinCachedWarnings() {
-
-    }
-
-    public void AnalysisResultPrintOut() {
+    private void AnalysisResultPrintOut() {
         File analyse_file = new File("Analysis_NEW450.xls");
         try {
             analyse_file.createNewFile();
@@ -216,7 +229,7 @@ public class Analysis {
 
     }
 
-    public void AddGroupWarningsToList(String line_name) {
+    private void AddGroupWarningsToList(String line_name) {
         ArrayList<WarningFormatData> warn_list = cache_related_warning_data.get(line_name);
         HashMap<String, TorpoDevice> tp_list = cache_related_device_torpo.get(line_name);
         WarningGroupData group_data = new WarningGroupData(line_name, warn_list, tp_list);
@@ -228,7 +241,7 @@ public class Analysis {
 
     }
 
-    public boolean TryToCombineFrequentWarnings(WarningFormatData old_data, WarningFormatData new_data) {
+    private boolean TryToCombineFrequentWarnings(WarningFormatData old_data, WarningFormatData new_data) {
         long timeval = new_data.happen_time.sub(old_data.handle_time);
         if (timeval < Analysis.FREQUENT_WARNINGS_TIME_LIMIT) {
             old_data.handle_time = new_data.handle_time;

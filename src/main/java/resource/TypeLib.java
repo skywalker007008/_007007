@@ -7,28 +7,19 @@ import java.util.HashMap;
  */
 public class TypeLib {
 
-    private HashMap<String, Integer> warntype2int_lib;
+    private static final HashMap<String, Integer> warntype2int_lib = new HashMap<String, Integer>();
 
-    private HashMap<Integer, String> int2warntype_lib;
+    private static final HashMap<Integer, String> int2warntype_lib = new HashMap<Integer, String>();
 
-    private HashMap<String, Integer> boardtype2int_lib;
+    private static final HashMap<String, Integer> boardtype2int_lib = new HashMap<String, Integer>();
 
-    private HashMap<Integer, String> int2boardtype_lib;
+    private static final HashMap<Integer, String> int2boardtype_lib = new HashMap<Integer, String>();
 
-    private HashMap<String, Integer> pairtype2int_lib;
+    private static final HashMap<String, Integer> pairtype2int_lib  = new HashMap<String, Integer>();
 
-    private HashMap<Integer, String> int2pairtype_lib;
+    private static final HashMap<Integer, String> int2pairtype_lib = new HashMap<Integer, String>();
 
-    public TypeLib() {
-        warntype2int_lib = new HashMap<String, Integer>();
-        int2boardtype_lib = new HashMap<Integer, String>();
-        boardtype2int_lib = new HashMap<String, Integer>();
-        int2warntype_lib = new HashMap<Integer, String>();
-        pairtype2int_lib = new HashMap<String, Integer>();
-        int2pairtype_lib = new HashMap<Integer, String>();
-    }
-
-    public int GetWarnTypeInt(String str) {
+    public static int GetWarnTypeInt(String str) {
         if (!warntype2int_lib.containsKey(str)) {
             int size = warntype2int_lib.size();
             warntype2int_lib.put(str, size);
@@ -39,7 +30,7 @@ public class TypeLib {
         }
     }
 
-    public String GetWarnTypeString(int value) {
+    public static String GetWarnTypeString(int value) {
         if (!int2warntype_lib.containsKey(value)) {
             return null;
             // Something should never happen
@@ -48,7 +39,7 @@ public class TypeLib {
         }
     }
 
-    public int GetBoardTypeInt(String str) {
+    public static int GetBoardTypeInt(String str) {
         if (!boardtype2int_lib.containsKey(str)) {
             int size = warntype2int_lib.size();
             boardtype2int_lib.put(str, size);
@@ -59,7 +50,7 @@ public class TypeLib {
         }
     }
 
-    public String GetBoardTypeString(int value) {
+    public static String GetBoardTypeString(int value) {
         if (!int2boardtype_lib.containsKey(value)) {
             return null;
             // Something should never happen
@@ -68,7 +59,7 @@ public class TypeLib {
         }
     }
 
-    public int GetPairTypeInt(String str) {
+    public static int GetPairTypeInt(String str) {
         if (!pairtype2int_lib.containsKey(str)) {
             int size = pairtype2int_lib.size();
             pairtype2int_lib.put(str, size);
@@ -79,12 +70,24 @@ public class TypeLib {
         }
     }
 
-    public String GetPairTypeString(int value) {
+    public static String GetPairTypeString(int value) {
         if (!int2pairtype_lib.containsKey(value)) {
             return null;
             // Something should never happen
         } else {
             return int2pairtype_lib.get(value);
         }
+    }
+
+    public static int GetPairTypeSize() {
+        return int2pairtype_lib.size();
+    }
+
+    public static int GetWarnTypeSize() {
+        return int2warntype_lib.size();
+    }
+
+    public static int GetBoardTypeSize() {
+        return int2boardtype_lib.size();
     }
 }

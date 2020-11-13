@@ -141,6 +141,17 @@ public class WarningGroupData {
         }
     }
 
+    public ArrayList<Object> GetWarningLevel(String dev_id) {
+        TorpoDevice tp_dev = torpo_map.get(dev_id);
+        ArrayList<Object> list = new ArrayList<Object>();
+        for (int i = 0; i < 4; i++) {
+            Object ob = tp_dev.GetLevelObjectOfRouteType(i);
+            list.add(ob);
+        }
+        return list;
+    }
 
 
+    public void FlushOrderByLevelOnRoute(int direction) {
+    }
 }

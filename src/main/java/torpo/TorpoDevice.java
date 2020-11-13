@@ -291,5 +291,11 @@ public class TorpoDevice extends Device {
     }
 
 
-
+    public Object GetLevelObjectOfRouteType(int route_type) {
+        if (this.level_map.containsKey(route_type)) {
+            return level_map.get(route_type);
+        } else {
+            return pseudo_level_map.get(route_type);
+        }
+    }
 }

@@ -107,3 +107,15 @@
 + Finish GraphNode.ReadGroupData()
 + Finish K-means.Cluster()
 + Repeated testing, until the result seems good.
+
+## 1113-1 version
+
+### What's new?
+
++ Almost finish the process of k_means with only one test
+
+### What's next?
+
++ Finish Cluster.Update()
++ Finish K-means.ChooseInitialNodes()
++ Using different values to test the answer of k-means

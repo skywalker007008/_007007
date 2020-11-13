@@ -15,26 +15,26 @@ public class FindClusters {
 
     private ArrayList<GroupNode> nodes;
 
-    private TypeLib lib;
-
-    public FindClusters(TypeLib lib) {
-        this.lib = lib;
+    public FindClusters() {
+        cluster_list = new ArrayList<Cluster>();
+        nodes = new ArrayList<GroupNode>();
     }
 
     public void AddNewGroupData(WarningGroupData data) {
         GroupNode node = new GroupNode();
         node.ReadFromWarningGroupData(data);
+        nodes.add(node);
     }
 
-    public void FindClustersByMeans(String method, int iter_time, int value) {
+    public void FindClustersByMethod(String method, int iter_time, int value) {
         // Now K-means
         if (method.equals("K-means")) {
             K_Means k_means = new K_Means();
             k_means.AddNodes(nodes);
             k_means.SetClusterNum(value);
             k_means.SetIterTime(iter_time);
-            k_means.SetReferenceLib(lib);
-            ArrayList<Cluster> list = k_means.Clusters();
+            k_means.Clusters();
+            ArrayList<Cluster> list = k_means.GetClusters();
             cluster_list.clear();
             cluster_list.addAll(list);
         }
