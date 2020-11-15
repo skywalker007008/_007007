@@ -56,16 +56,17 @@ public class WarningGroupData {
     private WritableSheet sheet;
     private VisualTorpo visual_torpo;
 
-    private static void PrintLabelSheet(WritableSheet sheet) {
+    private static void PrintLabelSheet(WritableSheet sheet, int start_line) {
         try {
-            sheet.addCell(new Label(0,0,"ROUTE_NAME"));
-            sheet.addCell(new Label(0, 1, "PORT-ID"));
-            sheet.addCell(new Label(1, 1, "ERROR_TYPE"));
-            sheet.addCell(new Label(2, 1, "HAPPEN_TIME"));
-            sheet.addCell(new Label(3, 1, "HANDLE_TIME"));
-            sheet.addCell(new Label(4, 1, "LANE"));
-            sheet.addCell(new Label(5, 1, "PORT_LEVEL"));
-            sheet.addCell(new Label(6, 1, "FREQUENT_TIME"));
+            sheet.addCell(new Label(0, start_line,"ROUTE_NAME"));
+            start_line++;
+            sheet.addCell(new Label(0, start_line, "PORT-ID"));
+            sheet.addCell(new Label(1, start_line, "ERROR_TYPE"));
+            sheet.addCell(new Label(2, start_line, "HAPPEN_TIME"));
+            sheet.addCell(new Label(3, start_line, "HANDLE_TIME"));
+            sheet.addCell(new Label(4, start_line, "LANE"));
+            sheet.addCell(new Label(5, start_line, "PORT_LEVEL"));
+            sheet.addCell(new Label(6, start_line, "FREQUENT_TIME"));
             //sheet.addCell(new Label(6, 0, "PORT-ID"));
             //sheet.addCell(new Label(7, 0, "PORT-ID"));
         } catch (Exception e) {
@@ -105,12 +106,63 @@ public class WarningGroupData {
         this.base_warning_data = base_data;
     }
 
+    public boolean ReUnitFormatDataByLevelOfRoute(int route) {
+        ArrayList<WarningFormatData> tmp_list = new ArrayList<WarningFormatData>();
+        ArrayList<Double> db_list = new ArrayList<Double>();
+        for (WarningFormatData data: this.warn_data_list) {
+            String label = data.device_data.GetLabel();
+            double level_a = this.torpo_map.get(label).GetLevelOfRouteType(route, true);
+            if (tmp_list.isEmpty()) {
+                tmp_list.add(data);
+                db_list.add(level_a);
+                continue;
+            }
+            for (int i = 0; i < tmp_list.size(); i++) {
+                double level_b = db_list.get(i);
+                if (level_a <= level_b) {
+                    tmp_list.add(i, data);
+                    db_list.add(i, level_a);
+                    break;
+                } else if (i == tmp_list.size() - 1) {
+                    tmp_list.add(data);
+                    db_list.add(level_a);
+                    break;
+                }
+            }
+        }
+        warn_data_list.clear();
+        warn_data_list.addAll(tmp_list);
+        return true;
+    }
+
     public void SetSheetForTorpoVisualize(WritableSheet sheet) {
         this.sheet = sheet;
     }
 
-    public void MakeGroup(WritableSheet sheet) {
+    public int MakeGroup(WritableSheet sheet, int start_line) {
+        PrintLabelSheet(sheet, start_line);
+        this.ReUnitFormatDataByLevelOfRoute(0);
+        int i = start_line + 2;
+        try {
+            for (WarningFormatData data: warn_data_list
+                 ) {
+                String label = data.device_data.GetLabel();
 
+                sheet.addCell(new Label(0, i, label));
+                sheet.addCell(new Label(1, i, data.err_signal.string_type));
+                sheet.addCell(new Label(2, i, data.happen_time.PrintOut()));
+                sheet.addCell(new Label(3, i, data.handle_time.PrintOut()));
+                sheet.addCell(new Label(4, i, "0"));
+                sheet.addCell(new Label(5, i, String.valueOf((this.torpo_map.get(label)).GetLevelOfRouteType(0, true))));
+                sheet.addCell(new Label(6, i, String.valueOf(data.combine_time)));
+                //sheet.addCell(new Label(6, 0, "PORT-ID"));
+                //sheet.addCell(new Label(7, 0, "PORT-ID"));
+                i++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return i;
     }
 
     /*

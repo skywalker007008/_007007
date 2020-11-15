@@ -2,6 +2,7 @@ package analysis.cluster;
 
 import analysis.WarningGroupData;
 import javafx.util.Pair;
+import jxl.write.WritableSheet;
 import read.WarningFormatData;
 import resource.TypeLib;
 import torpo.TorpoRoute;
@@ -23,12 +24,15 @@ public class GroupNode {
 
     private ArrayList<Integer> level_list;
 
-    public GroupNode() {
+    private int node_id;
+
+    public GroupNode(int node_id) {
         graph_coordinate = new Coordinate();
         level_list = new ArrayList<Integer>();
+        this.node_id = node_id;
     }
 
-    public void ReadFromWarningGroupData(WarningGroupData group_data) {
+    public void ReadFromWarningGroupData(WarningGroupData group_data, TypeLib lib) {
         this.group_data = group_data;
         group_data.FlushOrderByLevelOnRoute(TorpoRoute.POSITIVE_ODD);
         HashMap<Integer, Double> warn_ratio;
@@ -55,9 +59,9 @@ public class GroupNode {
             }
             level_list.add(level);
             String board_err_name = board_name + "-" + err;
-            int board_type = TypeLib.GetBoardTypeInt(board_name);
-            int warn_type = TypeLib.GetWarnTypeInt(err);
-            int pair_type = TypeLib.GetPairTypeInt(board_err_name);
+            int board_type = lib.GetBoardTypeInt(board_name);
+            int warn_type = lib.GetWarnTypeInt(err);
+            int pair_type = lib.GetPairTypeInt(board_err_name);
 
             if (pair_ratio.containsKey(pair_type)) {
                 double a = pair_ratio.get(pair_type);
@@ -114,6 +118,7 @@ public class GroupNode {
         }
 
         gap_levels /= total_num;
+        gap_levels *= 0.0025;
 
         graph_coordinate.AddWarnRatio(warn_ratio);
         graph_coordinate.AddBoardRatio(board_ratio);
@@ -124,6 +129,12 @@ public class GroupNode {
         warn_ratio.clear();
         board_ratio.clear();
         pair_ratio.clear();
+
+        PrintCoordinate();
+    }
+
+    private void PrintCoordinate() {
+        System.out.println("Node ID: " + node_id + " Gap Level: " + this.graph_coordinate.GetLevelGap());
     }
 
     public Coordinate GetCoordinate() {
@@ -136,5 +147,17 @@ public class GroupNode {
 
     public double CountDistanceToCluster(Cluster tmp_cluster, Distance.DistanceType dis_type) {
         return Coordinate.GetDistance(tmp_cluster.GetCoordinate(), this.graph_coordinate, dis_type);
+    }
+
+    public Cluster GetInCluster() {
+        return in_cluster;
+    }
+
+    public int GetId() {
+        return this.node_id;
+    }
+
+    public int PrintResult(WritableSheet sheet, int start_line) {
+        return this.group_data.MakeGroup(sheet, start_line);
     }
 }

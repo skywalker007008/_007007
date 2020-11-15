@@ -6,8 +6,6 @@ import torpo.TorpoData;
 public class MainProcedure {
     public static void main(String args[]) {
 
-        TypeLib lib = new TypeLib();
-
         System.out.println("Torpo Information Loading...");
         TorpoData torpo_data = new TorpoData();
         torpo_data.ReadTorpoInfo("/home/skywalker/桌面/G410/_007007/torpo_new.xls");
@@ -16,13 +14,16 @@ public class MainProcedure {
 
         System.out.println("Excel Data Loading...");
         WarningData excel_data = new WarningData(1000);
-        excel_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/test_part.xls");
+        excel_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/test_only300.xls");
         //excel_data.ReadExcelDataNew("C://Users//Administrator//IdeaProjects//_007007/test_new.xls");
         System.out.println("Excel Data Loaded Success!");
         // Test Almost Finished
 
+        TypeLib lib = new TypeLib();
+
         System.out.println("Analysing...");
         Analysis analyse = new Analysis(excel_data, torpo_data);
+        analyse.SetLib(lib);
         analyse.AnalysisData();
         System.out.println("Analyse finished!");
 /*

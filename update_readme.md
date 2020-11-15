@@ -125,3 +125,9 @@
 ### What's new?
 
 + Finish Coding of k-means, left test of k-means
+
+## 1115-1 version
+
+### What's new?
+
++ Basically the k-means seems ok

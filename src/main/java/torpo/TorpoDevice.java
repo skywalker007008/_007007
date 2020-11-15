@@ -61,6 +61,7 @@ public class TorpoDevice extends Device {
         this.next_route_map = new HashMap<Integer, HashSet<String>>();
         this.above_route_map = new HashMap<Integer, HashSet<String>>();
         this.flush_map = new HashMap<Integer, Integer>();
+        this.line_map = new HashMap<Integer, Integer>();
         flush_map.put(0,0);
         flush_map.put(1,0);
         flush_map.put(2,0);
@@ -189,6 +190,21 @@ public class TorpoDevice extends Device {
             return -1;
         }
 
+    }
+
+    public double GetLevelOfRouteType(int route_type, boolean is_double) {
+        if (level_map.containsKey(route_type)) {
+            return level_map.get(route_type);
+        } else {
+            if (pseudo_level_map.containsKey(route_type)) {
+                Pair<Integer, Integer> pair = pseudo_level_map.get(route_type);
+                double level = pair.getKey();
+                level += 0.1 * pair.getValue();
+                return level;
+            } else {
+                return -10;
+            }
+        }
     }
 
     public void FlushData(int level, int route_type) {

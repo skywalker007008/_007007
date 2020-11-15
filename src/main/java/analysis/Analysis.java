@@ -10,6 +10,7 @@ import read.WarningFormatData;
 import resource.Device;
 import resource.ErrorSignalType;
 import resource.MyTime;
+import resource.TypeLib;
 import torpo.TorpoData;
 import torpo.TorpoDevice;
 import torpo.TorpoRoute;
@@ -45,6 +46,8 @@ public class Analysis {
     private HashMap<String, ArrayList<WarningFormatData>> cache_related_warning_data;
     private HashMap<String, HashMap<String, TorpoDevice>> cache_related_device_torpo;
 
+    private TypeLib lib;
+
     public Analysis(){
 
 
@@ -61,31 +64,38 @@ public class Analysis {
         this.torpo_data = torpo_data;
     }
 
+    public void SetLib(TypeLib lib) {
+        this.lib = lib;
+    }
+
 
     public void AnalysisData() {
         // Step 1: Combine Frequent Warnings
         CombineFrequentWarnings();
         // Step 2: Find Relevant Warnings
         GroupRelevantWarnings();
-        // Step 3: Use Cluster Methods to find some clusters
-        FindClustersByMethod("K-Means");
 
-
-        // Step 3: Add uncached warnings together
-        //RejoinCachedWarnings();
         // Step 4: (Optional)PrintStack of the warnings relationship
-        //AnalysisResultPrintOut();
+        AnalysisResultPrintOut();
+        // Step 3: Use Cluster Methods to find some clusters
 
+        System.out.println("Finding Clusters...");
+        FindClustersByMethod("K-Means");
+        System.out.println("Finding Clusters Ending");
 
     }
 
     private void FindClustersByMethod(String method) {
-        FindClusters find_cluster = new FindClusters();
+        FindClusters find_cluster = new FindClusters(lib);
+        int i = 0;
         for (WarningGroupData data:
              this.related_warning_data) {
-            find_cluster.AddNewGroupData(data);
+            find_cluster.AddNewGroupData(data, i);
+            i++;
         }
-        find_cluster.FindClustersByMethod(method, 5, 2);
+        for (i = 3; i < 11; i++) {
+            find_cluster.FindClustersByMethod(method, 10, i);
+        }
 
     }
 
@@ -205,7 +215,7 @@ public class Analysis {
     }
 
     private void AnalysisResultPrintOut() {
-        File analyse_file = new File("Analysis_NEW450.xls");
+        File analyse_file = new File("Analysis_300Warnings.xls");
         try {
             analyse_file.createNewFile();
             WritableWorkbook workbook = Workbook.createWorkbook(analyse_file);
@@ -216,7 +226,7 @@ public class Analysis {
                 i = i + 1;
                 data.SetSheetForTorpoVisualize(sheet);
                 //data.BuildRelatedWarningsTorpo(true);
-                data.MakeGroup(sheet);
+                data.MakeGroup(sheet, 0);
                 System.out.println("Finish Analysis" + i);
             }
             if (related_warning_data.size() > 0) {

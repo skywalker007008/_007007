@@ -19,7 +19,11 @@ public class TypeLib {
 
     private static final HashMap<Integer, String> int2pairtype_lib = new HashMap<Integer, String>();
 
-    public static int GetWarnTypeInt(String str) {
+    public TypeLib() {
+
+    }
+
+    public int GetWarnTypeInt(String str) {
         if (!warntype2int_lib.containsKey(str)) {
             int size = warntype2int_lib.size();
             warntype2int_lib.put(str, size);
@@ -30,7 +34,7 @@ public class TypeLib {
         }
     }
 
-    public static String GetWarnTypeString(int value) {
+    public String GetWarnTypeString(int value) {
         if (!int2warntype_lib.containsKey(value)) {
             return null;
             // Something should never happen
@@ -39,7 +43,7 @@ public class TypeLib {
         }
     }
 
-    public static int GetBoardTypeInt(String str) {
+    public int GetBoardTypeInt(String str) {
         if (!boardtype2int_lib.containsKey(str)) {
             int size = warntype2int_lib.size();
             boardtype2int_lib.put(str, size);
@@ -50,7 +54,7 @@ public class TypeLib {
         }
     }
 
-    public static String GetBoardTypeString(int value) {
+    public String GetBoardTypeString(int value) {
         if (!int2boardtype_lib.containsKey(value)) {
             return null;
             // Something should never happen
@@ -59,7 +63,7 @@ public class TypeLib {
         }
     }
 
-    public static int GetPairTypeInt(String str) {
+    public int GetPairTypeInt(String str) {
         if (!pairtype2int_lib.containsKey(str)) {
             int size = pairtype2int_lib.size();
             pairtype2int_lib.put(str, size);
@@ -70,7 +74,7 @@ public class TypeLib {
         }
     }
 
-    public static String GetPairTypeString(int value) {
+    public String GetPairTypeString(int value) {
         if (!int2pairtype_lib.containsKey(value)) {
             return null;
             // Something should never happen
@@ -79,15 +83,15 @@ public class TypeLib {
         }
     }
 
-    public static int GetPairTypeSize() {
+    public int GetPairTypeSize() {
         return int2pairtype_lib.size();
     }
 
-    public static int GetWarnTypeSize() {
+    public int GetWarnTypeSize() {
         return int2warntype_lib.size();
     }
 
-    public static int GetBoardTypeSize() {
+    public int GetBoardTypeSize() {
         return int2boardtype_lib.size();
     }
 }

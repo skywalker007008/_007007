@@ -1,5 +1,7 @@
 package analysis.cluster;
 
+import jxl.write.WritableSheet;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -41,18 +43,47 @@ public class Cluster {
 
     public void ClearNodes() {
         nodes.clear();
+        this.e_value = 0;
     }
 
-    public void UpdateCoordinate() {
+    public boolean UpdateCoordinate() {
         // To be implemented
-        this.coordinate.ClearCoordinate();
 
+
+        if (nodes.isEmpty()) {
+            return false;
+        } else {
+            this.coordinate.ClearCoordinate();
+        }
         for (GroupNode node: this.nodes) {
             Coordinate cord = node.GetCoordinate();
+            this.coordinate.AddCoordinate(cord);
+        }
+        this.coordinate.DivideConstant(nodes.size());
+        return true;
+    }
+
+    public void UpdateEValue(Distance.DistanceType type) {
+        for (GroupNode node: this.nodes) {
+            Coordinate cord = node.GetCoordinate();
+            double distance = Coordinate.GetDistance(this.coordinate, cord, type);
+            e_value += (distance * distance);
         }
     }
 
     public double GetEValue() {
         return this.e_value;
+    }
+
+    public int GetClusterId() {
+        return this.cluster_id;
+    }
+
+    public void PrintResult(WritableSheet sheet) {
+        int i = 0;
+        for (GroupNode node: nodes) {
+            int start_line = node.PrintResult(sheet, i);
+            i = start_line + 2;
+        }
     }
 }

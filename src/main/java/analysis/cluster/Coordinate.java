@@ -121,12 +121,15 @@ public class Coordinate {
         for (int i = 0; i < list_a.size(); i++) {
             double tmp_distance = 0.0;
             Set<Integer> set_a = list_a.get(i);
-            Set<Integer> set_b = list_b.get(i);
+            Set<Integer> tmp_set_b = list_b.get(i);
+            HashSet<Integer> set_b = new HashSet<Integer>(tmp_set_b);
             for (int type: set_a) {
                 double value_a = cod_a.GetTypeRatio(i, type);
                 double value_b = cod_b.GetTypeRatio(i, type);
                 tmp_distance += Distance.GetDimensionDistanceByFormat(value_a, value_b, dis_type);
-                set_b.remove(type);
+                if (value_b != 0.0) {
+                    set_b.remove(type);
+                }
             }
             for (int type: set_b) {
                 double value_b = cod_b.GetTypeRatio(i, type);
@@ -267,12 +270,12 @@ public class Coordinate {
     }
 
     class Coefficient {
-        public static final double COEF_FOR_WARNS = 0.1;
+        public static final double COEF_FOR_WARNS = 1.9;
 
         public static final double COEF_FOR_BOARDS = 0.1;
 
-        public static final double COEF_FOR_PAIRS = 0.1;
+        public static final double COEF_FOR_PAIRS = 1.0;
 
-        public static final double COEF_FOR_LEVELS = 0.1;
+        public static final double COEF_FOR_LEVELS = 0.01;
     }
 }
