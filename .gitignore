@@ -1,4 +1,5 @@
 /.idea
-
+!./result/*.xls
+*.xls
 *.xlsx
 /target
