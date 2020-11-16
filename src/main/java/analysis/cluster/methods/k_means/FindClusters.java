@@ -1,7 +1,6 @@
-package analysis.cluster;
+package analysis.cluster.methods.k_means;
 
 import analysis.WarningGroupData;
-import analysis.cluster.methods.K_Means;
 import resource.TypeLib;
 
 import java.util.ArrayList;
@@ -16,6 +15,8 @@ public class FindClusters {
     private ArrayList<GroupNode> nodes;
 
     private TypeLib lib;
+
+    private String path;
 
     public FindClusters(TypeLib lib) {
         cluster_list = new ArrayList<Cluster>();
@@ -38,7 +39,7 @@ public class FindClusters {
             k_means.SetClusterNum(value);
             k_means.SetIterTime(iter_time);
             k_means.Clusters();
-            k_means.PrintResult();
+            k_means.PrintResult(path);
             ArrayList<Cluster> list = k_means.GetClusters();
             cluster_list.clear();
             cluster_list.addAll(list);
@@ -48,5 +49,9 @@ public class FindClusters {
 
     public void PrintResult() {
 
+    }
+
+    public void SetPath(String s) {
+        path = s;
     }
 }

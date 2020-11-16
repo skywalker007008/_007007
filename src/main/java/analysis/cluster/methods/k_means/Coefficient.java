@@ -1,4 +1,4 @@
-package analysis.cluster;
+package analysis.cluster.methods.k_means;
 
 import java.util.ArrayList;
 
@@ -8,11 +8,11 @@ public class Coefficient {
     public static double COEF_PAIR;
     public static double COEF_LEVEL;
 
-    public static void ReadCoef(ArrayList<Double> list) {
-        COEF_WARN = list.get(0);
-        COEF_BOARD = list.get(1);
-        COEF_PAIR = list.get(2);
-        COEF_LEVEL = list.get(3);
+    public static void ReadCoef(Double[] list) {
+        COEF_WARN = list[0];
+        COEF_BOARD = list[1];
+        COEF_PAIR = list[2];
+        COEF_LEVEL = list[3];
     }
 
     public static double GetCoef(int i) {

@@ -1,8 +1,9 @@
 package analysis;
 
-import analysis.cluster.Coefficient;
-import analysis.cluster.FindClusters;
+import analysis.cluster.methods.k_means.Coefficient;
+import analysis.cluster.methods.k_means.FindClusters;
 import javafx.util.Pair;
+import jxl.Sheet;
 import jxl.Workbook;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
@@ -81,18 +82,31 @@ public class Analysis {
         // Step 3: Use Cluster Methods to find some clusters
 
         System.out.println("Finding Clusters...");
-        Double[][] args = new Double[1][4];
-        ReadArgs(args);
+        Double[][] args = ReadArgs("./args/args.xls");
         FindClustersByMethod("K-Means", args);
         System.out.println("Finding Clusters Ending");
 
     }
 
-    private void ReadArgs(Double[][] args) {
-        args[0][1] = 1.9;
-        args[0][2] = 0.5;
-        args[0][3] = 1.0;
-        args[0][4] = 0.01;
+    private Double[][] ReadArgs(String path) {
+        File file = new File(path);
+        try {
+            Workbook workbook = Workbook.getWorkbook(file);
+            Sheet sheet = workbook.getSheet(0);
+            int rows = sheet.getRows() - 1;
+            int columns = sheet.getColumns();
+            Double[][] args = new Double[rows][columns];
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < columns; j++) {
+                    args[i][j] = Double.parseDouble(sheet.getCell(j, i + 1).getContents());
+                }
+            }
+            return args;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
     }
 
@@ -105,15 +119,12 @@ public class Analysis {
             i++;
         }
         int b_size = arg_list.length;
-        int s_size = arg_list[0].length;
 
         for (i = 0; i < b_size; i++) {
-            ArrayList<Double> list = new ArrayList<Double>();
-            for (int j = 0; j < s_size; j++) {
-                list.add(arg_list[i][j]);
-            }
-            Coefficient.ReadCoef(list);
+            Coefficient.ReadCoef(arg_list[i]);
+            find_cluster.SetPath("./result/k_means/model_0/arg_type" + String.valueOf(i) + "/");
             for (int cluster_num = 3; cluster_num < 20; cluster_num++) {
+
                 find_cluster.FindClustersByMethod(method, 10, cluster_num);
             }
         }

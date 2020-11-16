@@ -1,9 +1,9 @@
-package analysis.cluster.methods;
+package analysis.cluster.methods.k_means;
 
-import analysis.cluster.Cluster;
-import analysis.cluster.Coordinate;
-import analysis.cluster.Distance;
-import analysis.cluster.GroupNode;
+import analysis.cluster.methods.k_means.Cluster;
+import analysis.cluster.methods.k_means.Coordinate;
+import analysis.cluster.methods.k_means.Distance;
+import analysis.cluster.methods.k_means.GroupNode;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
@@ -93,18 +93,12 @@ public class K_Means {
         }
     }
 
-    public void PrintResult() {
-        String head = "./result/k_means/model_0/";
-        File tmp_file = new File(head);
+    public void PrintResult(String path) {
+        File tmp_file = new File(path);
         if (!tmp_file.exists()) {
             tmp_file.mkdir();
         }
-        String arg_folder = "arg_type2/";
-        tmp_file = new File(head + arg_folder);
-        if (!tmp_file.exists()) {
-            tmp_file.mkdir();
-        }
-        File arg_file = new File(head + arg_folder + "args.xls");
+        File arg_file = new File(path + "args.xls");
         try {
             arg_file.createNewFile();
             WritableWorkbook book = Workbook.createWorkbook(arg_file);
@@ -115,7 +109,7 @@ public class K_Means {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        File k_means_file = new File(head + arg_folder +
+        File k_means_file = new File(path +
                 "k_means(cluster_" + this.cluster_num + ")_result.xls");
         try {
             k_means_file.createNewFile();

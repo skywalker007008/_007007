@@ -1,4 +1,4 @@
-package analysis.cluster;
+package analysis.cluster.methods.k_means;
 
 import java.util.*;
 

@@ -1,9 +1,8 @@
-package analysis.cluster;
+package analysis.cluster.methods.k_means;
 
 import jxl.write.WritableSheet;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /*
  * The cluster that we find
