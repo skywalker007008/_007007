@@ -99,7 +99,7 @@ public class K_Means {
         if (!tmp_file.exists()) {
             tmp_file.mkdir();
         }
-        String arg_folder = "arg_type1/";
+        String arg_folder = "arg_type2/";
         tmp_file = new File(head + arg_folder);
         if (!tmp_file.exists()) {
             tmp_file.mkdir();

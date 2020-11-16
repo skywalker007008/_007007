@@ -1,5 +1,6 @@
 package analysis;
 
+import analysis.cluster.Coefficient;
 import analysis.cluster.FindClusters;
 import javafx.util.Pair;
 import jxl.Workbook;
@@ -80,12 +81,22 @@ public class Analysis {
         // Step 3: Use Cluster Methods to find some clusters
 
         System.out.println("Finding Clusters...");
-        FindClustersByMethod("K-Means");
+        Double[][] args = new Double[1][4];
+        ReadArgs(args);
+        FindClustersByMethod("K-Means", args);
         System.out.println("Finding Clusters Ending");
 
     }
 
-    private void FindClustersByMethod(String method) {
+    private void ReadArgs(Double[][] args) {
+        args[0][1] = 1.9;
+        args[0][2] = 0.5;
+        args[0][3] = 1.0;
+        args[0][4] = 0.01;
+
+    }
+
+    private void FindClustersByMethod(String method, Double[][] arg_list) {
         FindClusters find_cluster = new FindClusters(lib);
         int i = 0;
         for (WarningGroupData data:
@@ -93,8 +104,18 @@ public class Analysis {
             find_cluster.AddNewGroupData(data, i);
             i++;
         }
-        for (i = 3; i < 20; i++) {
-            find_cluster.FindClustersByMethod(method, 10, i);
+        int b_size = arg_list.length;
+        int s_size = arg_list[0].length;
+
+        for (i = 0; i < b_size; i++) {
+            ArrayList<Double> list = new ArrayList<Double>();
+            for (int j = 0; j < s_size; j++) {
+                list.add(arg_list[i][j]);
+            }
+            Coefficient.ReadCoef(list);
+            for (int cluster_num = 3; cluster_num < 20; cluster_num++) {
+                find_cluster.FindClustersByMethod(method, 10, cluster_num);
+            }
         }
 
     }

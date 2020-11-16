@@ -142,7 +142,7 @@ public class Coordinate {
         double level_b = cod_b.GetLevelGap();
         double value = Distance.
                 GetDimensionDistanceByFormat(level_a, level_b, dis_type);
-        distance += value * Coefficient.COEF_FOR_LEVELS;
+        distance += value * Coefficient.COEF_LEVEL;
 
         return distance;
     }
@@ -189,6 +189,7 @@ public class Coordinate {
     }
 
     public static final double GetCoef(int i) {
+        /*
         switch (i) {
             case 0:
                 return Coefficient.COEF_FOR_WARNS;
@@ -202,6 +203,9 @@ public class Coordinate {
             default:
                 return 0;
         }
+        */
+
+        return Coefficient.GetCoef(i);
     }
 
     public void ClearCoordinate() {
@@ -267,15 +271,5 @@ public class Coordinate {
 
         this.level_gap /= num;
 
-    }
-
-    class Coefficient {
-        public static final double COEF_FOR_WARNS = 1.9;
-
-        public static final double COEF_FOR_BOARDS = 0.5;
-
-        public static final double COEF_FOR_PAIRS = 1.0;
-
-        public static final double COEF_FOR_LEVELS = 0.01;
     }
 }
