@@ -5,6 +5,7 @@ import analysis.cluster.methods.k_means.FindClusters;
 import javafx.util.Pair;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import read.WarningData;
@@ -82,7 +83,7 @@ public class Analysis {
         // Step 3: Use Cluster Methods to find some clusters
 
         System.out.println("Finding Clusters...");
-        Double[][] args = ReadArgs("./args/args.xls");
+        Double[][] args = ReadArgs("./args/args2.xls");
         FindClustersByMethod("K-Means", args);
         System.out.println("Finding Clusters Ending");
 
@@ -120,12 +121,36 @@ public class Analysis {
         }
         int b_size = arg_list.length;
 
+
         for (i = 0; i < b_size; i++) {
             Coefficient.ReadCoef(arg_list[i]);
-            find_cluster.SetPath("./result/k_means/model_0/arg_type" + String.valueOf(i) + "/");
+            find_cluster.SetPath("./result/k_means/model_1/arg_type" + String.valueOf(i) + "/");
+            ArrayList<Object> result = new ArrayList<Object>();
             for (int cluster_num = 3; cluster_num < 20; cluster_num++) {
 
-                find_cluster.FindClustersByMethod(method, 10, cluster_num);
+                Object e_list =
+                        find_cluster.FindClustersByMethod(method, 10, cluster_num);
+                result.add(cluster_num);
+                result.add(e_list);
+            }
+            if (method.equals("K-Means")) {
+                File e_file = new File("./result/k_means/model_1/arg_type" + String.valueOf(i) + "/e_value.xls");
+                try {
+                    e_file.createNewFile();
+                    WritableWorkbook book = Workbook.createWorkbook(e_file);
+                    WritableSheet sheet = book.createSheet("e_value", 0);
+                    for (int t = 0; t < result.size() / 2; t++) {
+                        sheet.addCell(new Label(0, t, String.valueOf((Integer)result.get(2 * t))));
+                        ArrayList<Double> double_list = (ArrayList<Double>) result.get(2 * t + 1);
+                        for (int o = 0; o < double_list.size(); o++) {
+                            sheet.addCell(new Label(o + 1, t, String.valueOf(double_list.get(o))));
+                        }
+                    }
+                    book.write();
+                    book.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 

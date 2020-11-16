@@ -131,3 +131,15 @@
 ### What's new?
 
 + Basically the k-means seems ok
+
+## 1116-1 version
+
+### What's new?
+
++ New Test Result, enables one read with so many models
+
+## 1116-2 version
+
+### What's new?
+
++ model_1 created and files update

@@ -30,7 +30,7 @@ public class FindClusters {
         nodes.add(node);
     }
 
-    public void FindClustersByMethod(String method, int iter_time, int value) {
+    public Object FindClustersByMethod(String method, int iter_time, int value) {
         // Now K-means
         if (method.equals("K-Means")) {
             System.out.println("K-means start. Value: " + value);
@@ -44,6 +44,9 @@ public class FindClusters {
             cluster_list.clear();
             cluster_list.addAll(list);
             System.out.println("K-means end. Value: " + value);
+            return k_means.GetEValues();
+        } else {
+            return null;
         }
     }
 

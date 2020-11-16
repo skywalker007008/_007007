@@ -93,21 +93,26 @@ public class K_Means {
         }
     }
 
+    private void PrintArgs(String path) {
+        File arg_file = new File(path + "args.xls");
+        try {
+            if (arg_file.createNewFile()) {
+                WritableWorkbook book = Workbook.createWorkbook(arg_file);
+                WritableSheet sheet = book.createSheet("args", 0);
+                PrintArgResult(sheet);
+                book.write();
+                book.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void PrintResult(String path) {
         File tmp_file = new File(path);
         if (!tmp_file.exists()) {
             tmp_file.mkdir();
-        }
-        File arg_file = new File(path + "args.xls");
-        try {
-            arg_file.createNewFile();
-            WritableWorkbook book = Workbook.createWorkbook(arg_file);
-            WritableSheet sheet = book.createSheet("args", 0);
-            PrintArgResult(sheet);
-            book.write();
-            book.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            this.PrintArgs(path);
         }
         File k_means_file = new File(path +
                 "k_means(cluster_" + this.cluster_num + ")_result.xls");
@@ -205,5 +210,34 @@ public class K_Means {
         return node_list;
     }
 
+    public ArrayList<Double> GetEValues() {
+        return this.e_value_history;
+    }
 
+/*
+    public void PrintEValue(String path) {
+        File file = new File(path);
+        try {
+            boolean answer = file.createNewFile();
+            if (answer) {
+                WritableWorkbook book = Workbook.createWorkbook(file);
+                WritableSheet sheet = book.createSheet("e_value", 0);
+                sheet.addCell(new Label(0, 0, "CLUSTER_NUM"));
+                sheet.addCell(new Label(1, 0, "E_VALUE_HISTORY"));
+                sheet.addCell(new Label(0, 1, String.valueOf(this.cluster_num)));
+                for (int i = 0; i < e_value_history.size(); i++) {
+                    sheet.addCell(new Label(i + 1, 1, String.valueOf(e_value_history.get(i))));
+                }
+                book.write();
+                book.close();
+            } else {
+                //WritableWorkbook book = Workbook.getWorkbook(file);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+ */
 }
