@@ -272,7 +272,7 @@ public class Coordinate {
     class Coefficient {
         public static final double COEF_FOR_WARNS = 1.9;
 
-        public static final double COEF_FOR_BOARDS = 0.1;
+        public static final double COEF_FOR_BOARDS = 0.5;
 
         public static final double COEF_FOR_PAIRS = 1.0;
 

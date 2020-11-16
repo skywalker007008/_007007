@@ -93,7 +93,7 @@ public class Analysis {
             find_cluster.AddNewGroupData(data, i);
             i++;
         }
-        for (i = 3; i < 11; i++) {
+        for (i = 3; i < 20; i++) {
             find_cluster.FindClustersByMethod(method, 10, i);
         }
 

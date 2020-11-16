@@ -141,9 +141,11 @@ public class WarningGroupData {
 
     public int MakeGroup(WritableSheet sheet, int start_line) {
         PrintLabelSheet(sheet, start_line);
+
         this.ReUnitFormatDataByLevelOfRoute(0);
         int i = start_line + 2;
         try {
+            sheet.addCell(new Label(1, start_line, this.warning_on_route));
             for (WarningFormatData data: warn_data_list
                  ) {
                 String label = data.device_data.GetLabel();
