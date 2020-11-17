@@ -15,6 +15,10 @@ public class Coordinate {
 
     private Double level_gap;
 
+    // Used for model-2
+
+    private int many_type;
+
     public Coordinate() {
         warn_type_ratio = new HashMap<Integer, Double>();
         board_type_ratio = new HashMap<Integer, Double>();
@@ -144,7 +148,17 @@ public class Coordinate {
                 GetDimensionDistanceByFormat(level_a, level_b, dis_type);
         distance += value * Coefficient.COEF_LEVEL;
 
+        // Add for model-2
+
+        int many_a = cod_a.GetManyType();
+        int many_b = cod_b.GetManyType();
+        distance += Coefficient.COEF_MANY_TYPE * Distance.GetDimensionDistanceByFormat(many_a, many_b, dis_type);
+
         return distance;
+    }
+
+    public int GetManyType() {
+        return this.many_type;
     }
 
     public double GetTypeRatio(int i, int type) {
@@ -170,6 +184,10 @@ public class Coordinate {
 
     public void AddPairRatio(HashMap<Integer, Double> pair_ratio) {
         this.pair_type_ratio.putAll(pair_ratio);
+    }
+
+    public void SetManyType(int value) {
+        this.many_type = value;
     }
 
     public void AddPairRatio(int type, double ratio) {
@@ -250,6 +268,8 @@ public class Coordinate {
             }
         }
         this.level_gap += cord.GetLevelGap();
+        // Add model-2
+        this.many_type += cord.GetManyType();
     }
 
     public void DivideConstant(int num) {
@@ -270,6 +290,8 @@ public class Coordinate {
         }
 
         this.level_gap /= num;
+        // Add model-2
+        this.many_type /= num;
 
     }
 }

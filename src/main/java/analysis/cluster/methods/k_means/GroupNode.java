@@ -126,6 +126,14 @@ public class GroupNode {
 
         graph_coordinate.SetGapLevel(gap_levels);
 
+        // Add for model-2
+
+        if (group_data.GetFormatDataList().size() > 4) {
+            graph_coordinate.SetManyType(1);
+        } else {
+            graph_coordinate.SetManyType(0);
+        }
+
         warn_ratio.clear();
         board_ratio.clear();
         pair_ratio.clear();

@@ -88,6 +88,9 @@ public class K_Means {
             sheet.addCell(new Label(1, 1, String.valueOf(Coordinate.GetCoef(1))));
             sheet.addCell(new Label(1, 2, String.valueOf(Coordinate.GetCoef(2))));
             sheet.addCell(new Label(1, 3, String.valueOf(Coordinate.GetCoef(3))));
+            // Add model-2
+            sheet.addCell(new Label(0, 4, "COEF_FOR_MANY_TYPE"));
+            sheet.addCell(new Label(1, 4, String.valueOf(Coordinate.GetCoef(4))));
         } catch (Exception e) {
             e.printStackTrace();
         }

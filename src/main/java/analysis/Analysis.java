@@ -83,7 +83,7 @@ public class Analysis {
         // Step 3: Use Cluster Methods to find some clusters
 
         System.out.println("Finding Clusters...");
-        Double[][] args = ReadArgs("./args/args2.xls");
+        Double[][] args = ReadArgs("./args/args_for_model2.xls");
         FindClustersByMethod("K-Means", args);
         System.out.println("Finding Clusters Ending");
 
@@ -99,7 +99,11 @@ public class Analysis {
             Double[][] args = new Double[rows][columns];
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < columns; j++) {
-                    args[i][j] = Double.parseDouble(sheet.getCell(j, i + 1).getContents());
+                    String content = sheet.getCell(j, i + 1).getContents();
+                    if (content.equals("")) {
+                        return args;
+                    }
+                    args[i][j] = Double.parseDouble(content);
                 }
             }
             return args;
@@ -124,7 +128,7 @@ public class Analysis {
 
         for (i = 0; i < b_size; i++) {
             Coefficient.ReadCoef(arg_list[i]);
-            find_cluster.SetPath("./result/k_means/model_1/arg_type" + String.valueOf(i) + "/");
+            find_cluster.SetPath("./result/k_means/model_2/arg_type" + String.valueOf(i) + "/");
             ArrayList<Object> result = new ArrayList<Object>();
             for (int cluster_num = 3; cluster_num < 20; cluster_num++) {
 
@@ -134,7 +138,7 @@ public class Analysis {
                 result.add(e_list);
             }
             if (method.equals("K-Means")) {
-                File e_file = new File("./result/k_means/model_1/arg_type" + String.valueOf(i) + "/e_value.xls");
+                File e_file = new File("./result/k_means/model_2/arg_type" + String.valueOf(i) + "/e_value.xls");
                 try {
                     e_file.createNewFile();
                     WritableWorkbook book = Workbook.createWorkbook(e_file);
