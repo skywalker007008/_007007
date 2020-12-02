@@ -129,7 +129,16 @@ public class GroupNode {
                 gap_levels += 1;
             }
             else {
-                gap_levels += Math.pow(now_level - pre_level, 2);
+                // Add for model 3
+                {
+                    int level_gap = now_level - pre_level;
+                    if (level_gap > 5) {
+                        gap_levels += 900;
+                    } else {
+                        gap_levels += Math.pow(level_gap, 2);
+                    }
+                }
+                //gap_levels += Math.pow(now_level - pre_level, 2);
             }
         }
 
