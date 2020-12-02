@@ -149,3 +149,9 @@
 ### What's new?
 
 + add model_2, but not ok
+
+## 1202-1 version
+
++ add model_3, change the vector of warn_type, make it split by standard
+
++ able to judge MUT_LOS, but others not ok
