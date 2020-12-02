@@ -14,7 +14,7 @@ public class MainProcedure {
 
         System.out.println("Excel Data Loading...");
         WarningData excel_data = new WarningData(1000);
-        excel_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_only300.xls");
+        excel_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_part.xls");
         //excel_data.ReadExcelDataNew("C://Users//Administrator//IdeaProjects//_007007/test_new.xls");
         System.out.println("Excel Data Loaded Success!");
         // Test Almost Finished

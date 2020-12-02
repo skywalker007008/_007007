@@ -72,6 +72,7 @@ public class GroupNode {
 
             if (board_ratio.containsKey(board_type)) {
                 double a = board_ratio.get(board_type);
+
                 board_ratio.put(board_type, a + 1);
             } else {
                 board_ratio.put(board_type, 1.0);
@@ -79,7 +80,16 @@ public class GroupNode {
 
             if (warn_ratio.containsKey(warn_type)) {
                 double a = warn_ratio.get(warn_type);
-                warn_ratio.put(warn_type, a + 1);
+                // Add for model-3
+                if (a == 20.0) {
+
+                } else if (a == 4.0) {
+                    warn_ratio.put(warn_type, 20.0);
+                } else {
+                    warn_ratio.put(warn_type, a + 1);
+                }
+
+                // warn_ratio.put(warn_type, a + 1);
             } else {
                 warn_ratio.put(warn_type, 1.0);
             }
@@ -88,20 +98,26 @@ public class GroupNode {
         // Analyse avg value
         int total_num = level_list.size();
         Set<Integer> set = board_ratio.keySet();
+
+        // In model-3, omit the frequency
         for (int i: set) {
-            double ratio = board_ratio.get(i) / total_num;
+            //double ratio = board_ratio.get(i) / total_num;
+            double ratio = board_ratio.get(i);
             board_ratio.put(i, ratio);
         }
 
         set = warn_ratio.keySet();
         for (int i: set) {
-            double ratio = warn_ratio.get(i) / total_num;
+            //double ratio = warn_ratio.get(i) / total_num;
+            double ratio = warn_ratio.get(i);
             warn_ratio.put(i, ratio);
         }
 
+
         set = pair_ratio.keySet();
         for (int i: set) {
-            double ratio = pair_ratio.get(i) / total_num;
+            //double ratio = pair_ratio.get(i) / total_num;
+            double ratio = pair_ratio.get(i);
             pair_ratio.put(i, ratio);
         }
 

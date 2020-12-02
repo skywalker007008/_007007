@@ -157,9 +157,6 @@ public class K_Means {
         }
         // Step 2: Add new relationships between nodes and clusters
         for (GroupNode node: nodes) {
-            if (node.GetId() >= 23 && node.GetId() <= 25) {
-                int i = 0;
-            }
             double distance = -1;
             Cluster cluster = null;
             for (Cluster tmp_cluster: cluster_list) {
