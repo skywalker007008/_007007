@@ -208,4 +208,8 @@ public class WarningGroupData {
 
     public void FlushOrderByLevelOnRoute(int direction) {
     }
+
+    public int GetSize() {
+        return this.warn_data_list.size();
+    }
 }

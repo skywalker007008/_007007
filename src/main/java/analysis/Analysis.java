@@ -1,7 +1,6 @@
 package analysis;
 
-import analysis.cluster.methods.k_means.Coefficient;
-import analysis.cluster.methods.k_means.FindClusters;
+import analysis.cluster.methods.k_means.*;
 import javafx.util.Pair;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -82,14 +81,9 @@ public class Analysis {
         AnalysisResultPrintOut();
         // Step 3: Use Cluster Methods to find some clusters
 
-        System.out.println("Finding Clusters...");
-        Double[][] args = ReadArgs("./args/args_for_model3.xls");
-        FindClustersByMethod("K-Means", args);
-        System.out.println("Finding Clusters Ending");
-
     }
 
-    private Double[][] ReadArgs(String path) {
+    public Double[][] ReadArgs(String path) {
         File file = new File(path);
         try {
             Workbook workbook = Workbook.getWorkbook(file);
@@ -115,7 +109,46 @@ public class Analysis {
 
     }
 
-    private void FindClustersByMethod(String method, Double[][] arg_list) {
+    private void FindRules() {
+        HashMap<Integer, WarnType> warn_type_map = new HashMap<Integer, WarnType>();
+        ArrayList<WarningGroupData> size1_list = new ArrayList<WarningGroupData>();
+        ArrayList<WarningGroupData> size2_list = new ArrayList<WarningGroupData>();
+        for (WarningGroupData data: this.related_warning_data) {
+            if (data.GetSize() == 1) {
+                size1_list.add(data);
+            } else if (data.GetSize() == 2){
+                size2_list.add(data);
+            }
+        }
+
+        AnalysisSize1Data(size1_list, warn_type_map);
+        AnalysisSize2Data(size2_list, warn_type_map);
+    }
+
+    private void AnalysisSize1Data(ArrayList<WarningGroupData> data_list, HashMap<Integer, WarnType> map) {
+
+        for (WarningGroupData data: data_list) {
+            int warn_type = data.GetFormatDataList().get(0).err_signal.value_type;
+            if (map.containsKey(warn_type)) {
+                WarnType type = map.get(warn_type);
+                type.show_times++;
+            } else {
+                WarnType type = new WarnType(warn_type);
+                map.put(warn_type, type);
+            }
+        }
+    }
+
+    private void AnalysisSize2Data(ArrayList<WarningGroupData> data_list, HashMap<Integer, WarnType> map) {
+        for (WarningGroupData data: data_list) {
+            int warn_type1 = data.GetFormatDataList().get(0).err_signal.value_type;
+            int warn_type2 = data.GetFormatDataList().get(1).err_signal.value_type;
+            // To be implemented
+        }
+
+    }
+
+    public FindClusters FindClustersByMethod(String method, Double[][] arg_list) {
         FindClusters find_cluster = new FindClusters(lib);
         int i = 0;
         for (WarningGroupData data:
@@ -157,6 +190,64 @@ public class Analysis {
                 }
             }
         }
+        return find_cluster;
+
+    }
+
+    public ArrayList<Cluster> MatchCluster(FindClusters clusters) {
+        ArrayList<Cluster> cluster_list = new ArrayList<Cluster>();
+        ArrayList<Coordinate> coordinates = clusters.GetAllClusterCoordinate();
+        int i = 0;
+        for (Coordinate cord: coordinates) {
+            Cluster cluster = new Cluster(i);
+            i++;
+            cluster.SetCoordinate(cord);
+            cluster_list.add(cluster);
+        }
+
+        i = 0;
+        Distance dis = new Distance();
+        Distance.DistanceType dis_type = dis.new DistanceType(Distance.DistanceType.DISTANCE_EURCID, 0);
+        for (WarningGroupData data: this.related_warning_data) {
+            GroupNode node = new GroupNode(i);
+            node.ReadFromWarningGroupData(data, lib);
+            i++;
+
+            double distance = -1;
+            Cluster cluster = null;
+            for (Cluster tmp_cluster: cluster_list) {
+                double tmp_distance = node.CountDistanceToCluster(tmp_cluster, dis_type);
+                if (distance == -1 || tmp_distance < distance) {
+                    distance = tmp_distance;
+                    cluster = tmp_cluster;
+                }
+            }
+            boolean error = cluster.AddNodes(node);
+            if (!error) {
+                // Error here
+                System.out.println("Repeat Add node");
+            }
+            node.SetCluster(cluster);
+        }
+
+        try {
+            File k_means_file = new File("./result/k_means/model_3/arg_type2/cluster_match_2_19.xls");
+            k_means_file.createNewFile();
+            WritableWorkbook workbook = Workbook.createWorkbook(k_means_file);
+            i = 0;
+            for (Cluster cluster : cluster_list) {
+                WritableSheet sheet = workbook.createSheet("cluster-" + String.valueOf(i), i);
+                i++;
+                cluster.PrintResult(sheet);
+            }
+
+            workbook.write();
+            workbook.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cluster_list;
 
     }
 

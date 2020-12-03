@@ -1,3 +1,4 @@
+import jxl.Sheet;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
@@ -31,6 +32,22 @@ public class TestExcelOutput {
             workbook.write();
             workbook.close();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Workbook workbook = Workbook.getWorkbook(file);
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(file);
+            Sheet sheet = workbook.getSheet(0);
+            WritableSheet writableSheet = writableWorkbook.createSheet("sheet", 2);
+
+            Label label =  new Label(0, 0, "09090");
+            writableSheet.addCell(label);
+            workbook.close();
+            writableWorkbook.write();
+            writableWorkbook.close();
+
+        } catch (Exception e){
             e.printStackTrace();
         }
     }

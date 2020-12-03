@@ -13,6 +13,10 @@ public class Coordinate {
 
     private HashMap<Integer, Double> pair_type_ratio;
 
+    // Modified for model-3
+
+    private HashMap<Integer, Integer> level_gap_map;
+
     private Double level_gap;
 
     // Used for model-2
@@ -23,6 +27,7 @@ public class Coordinate {
         warn_type_ratio = new HashMap<Integer, Double>();
         board_type_ratio = new HashMap<Integer, Double>();
         pair_type_ratio = new HashMap<Integer, Double>();
+        level_gap_map = new HashMap<Integer, Integer>();
         level_gap = 0.0;
     }
 
@@ -36,8 +41,16 @@ public class Coordinate {
         board_type_ratio =
                 new HashMap<Integer, Double>(
                         coordinate.GetBoardTypeRatioMap());
+        level_gap_map =
+                new HashMap<Integer, Integer>(
+                        coordinate.GetLevelGapMap());
+
         level_gap = coordinate.GetLevelGap();
 
+    }
+
+    private HashMap<Integer, Integer> GetLevelGapMap() {
+        return this.level_gap_map;
     }
 
     public Double GetLevelGap() {
@@ -108,11 +121,20 @@ public class Coordinate {
         }
     }
 
+    public int GetLevelGapType(int type) {
+        if (!level_gap_map.containsKey(type)) {
+            return 0;
+        } else {
+            return level_gap_map.get(type);
+        }
+    }
+
     public ArrayList<Set<Integer>> GetTypeSet() {
         ArrayList<Set<Integer>> list = new ArrayList<Set<Integer>>();
         list.add(warn_type_ratio.keySet());
         list.add(board_type_ratio.keySet());
         list.add(pair_type_ratio.keySet());
+        list.add(level_gap_map.keySet());
         return list;
     }
 
@@ -142,11 +164,17 @@ public class Coordinate {
             distance += (tmp_distance * GetCoef(i));
         }
 
+        // Deleted for model-3
+
+        /*
+
         double level_a = cod_a.GetLevelGap();
         double level_b = cod_b.GetLevelGap();
         double value = Distance.
                 GetDimensionDistanceByFormat(level_a, level_b, dis_type);
         distance += value * Coefficient.COEF_LEVEL;
+
+         */
 
         // Add for model-2
 
@@ -169,6 +197,8 @@ public class Coordinate {
                 return this.GetBoardTypeRatio(type);
             case 2:
                 return this.GetPairTypeRatio(type);
+            case 3:
+                return this.GetLevelGapType(type);
             default:
                 return -1;
         }
@@ -184,6 +214,10 @@ public class Coordinate {
 
     public void AddPairRatio(HashMap<Integer, Double> pair_ratio) {
         this.pair_type_ratio.putAll(pair_ratio);
+    }
+
+    public void AddLevelGap(HashMap<Integer, Integer> level_gap_map) {
+        this.level_gap_map.putAll(level_gap_map);
     }
 
     public void SetManyType(int value) {
@@ -267,6 +301,18 @@ public class Coordinate {
                 pair_type_ratio.put(type, cord_value);
             }
         }
+
+        for (int type: level_gap_map.keySet()) {
+            int cord_value = level_gap_map.get(type);
+            if (this.level_gap_map.containsKey(type)) {
+                int prev_value = level_gap_map.get(type);
+                level_gap_map.put(type, prev_value + cord_value);
+            } else {
+                level_gap_map.put(type, cord_value);
+            }
+        }
+
+
         this.level_gap += cord.GetLevelGap();
         // Add model-2
         this.many_type += cord.GetManyType();

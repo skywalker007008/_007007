@@ -155,3 +155,7 @@
 + add model_3, change the vector of warn_type, make it split by standard
 
 + able to judge MUT_LOS, but others not ok
+
+## 1203-1 version
+
++ split training set and proof set

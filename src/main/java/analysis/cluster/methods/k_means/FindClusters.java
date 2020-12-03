@@ -24,6 +24,14 @@ public class FindClusters {
         this.lib = lib;
     }
 
+    public ArrayList<Coordinate> GetAllClusterCoordinate() {
+        ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
+        for (Cluster cluster: cluster_list) {
+            coordinates.add(cluster.GetCoordinate());
+        }
+        return coordinates;
+    }
+
     public void AddNewGroupData(WarningGroupData data, int id) {
         GroupNode node = new GroupNode(id);
         node.ReadFromWarningGroupData(data, lib);

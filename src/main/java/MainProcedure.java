@@ -1,7 +1,11 @@
 import analysis.Analysis;
+import analysis.cluster.methods.k_means.Cluster;
+import analysis.cluster.methods.k_means.FindClusters;
 import read.WarningData;
 import resource.TypeLib;
 import torpo.TorpoData;
+
+import java.util.ArrayList;
 
 public class MainProcedure {
     public static void main(String args[]) {
@@ -13,8 +17,10 @@ public class MainProcedure {
         // Tested pass, but unable to visualize
 
         System.out.println("Excel Data Loading...");
-        WarningData excel_data = new WarningData(1000);
-        excel_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_part.xls");
+        WarningData training_data = new WarningData(1000);
+        training_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_part.xls");
+        WarningData proof_data = new WarningData(1000);
+        proof_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_part.xls");
         //excel_data.ReadExcelDataNew("C://Users//Administrator//IdeaProjects//_007007/test_new.xls");
         System.out.println("Excel Data Loaded Success!");
         // Test Almost Finished
@@ -22,9 +28,19 @@ public class MainProcedure {
         TypeLib lib = new TypeLib();
 
         System.out.println("Analysing...");
-        Analysis analyse = new Analysis(excel_data, torpo_data);
+        Analysis analyse = new Analysis(training_data, torpo_data);
         analyse.SetLib(lib);
         analyse.AnalysisData();
+
+        System.out.println("Finding Clusters...");
+        Double[][] arg = analyse.ReadArgs("./args/args_for_model3.xls");
+        FindClusters clusters = analyse.FindClustersByMethod("K-Means", arg);
+        System.out.println("Finding Clusters Ending");
+
+        Analysis proof_analyse = new Analysis(proof_data, torpo_data);
+        proof_analyse.SetLib(lib);
+        proof_analyse.AnalysisData();
+        proof_analyse.MatchCluster(clusters);
         System.out.println("Analyse finished!");
 /*
         System.out.println("Finding Chain Message...");

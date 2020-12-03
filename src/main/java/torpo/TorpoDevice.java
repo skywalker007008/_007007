@@ -208,8 +208,9 @@ public class TorpoDevice extends Device {
     }
 
     public void FlushData(int level, int route_type) {
-        if (this.GetLabel().equals("1086-0-33-X3L401-1")) {
+        if (this.GetLabel().equals("1068-0-3-11SFIU-3")) {
             int i = 3;
+            i = i + 1;
         }
         int times = this.flush_map.get(route_type);
         times = times + 1;
@@ -254,7 +255,12 @@ public class TorpoDevice extends Device {
                     tp_dev.FlushData(now_level + 1, route_type);
                 }
             } else {
-                tp_dev.FlushPseudoData(now_level, route_type, 0, false);
+                int direction = TorpoRoute.GetRouteOtherSide(route_type);
+                if (tp_dev.ContainsRouteType(direction)) {
+                    tp_dev.FlushPseudoData(now_level, route_type, 1, false);
+                } else {
+                    tp_dev.FlushPseudoData(now_level, route_type, -1, false);
+                }
             }
         }
     }

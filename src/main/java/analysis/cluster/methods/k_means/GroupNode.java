@@ -41,6 +41,7 @@ public class GroupNode {
         warn_ratio = new HashMap<Integer, Double>();
         board_ratio = new HashMap<Integer, Double>();
         pair_ratio = new HashMap<Integer, Double>();
+        HashMap<Integer, Integer> level_gap = new HashMap<Integer, Integer>();
         // To be Implemented
         ArrayList<WarningFormatData> warn_list = group_data.GetFormatDataList();
         for (WarningFormatData data: warn_list) {
@@ -121,6 +122,29 @@ public class GroupNode {
             pair_ratio.put(i, ratio);
         }
 
+        // Modifiy for model-3
+
+        int pre_level = level_list.get(0);
+        int gap_level = 0;
+        for (int i = 1; i < total_num; i++) {
+            int now_level = level_list.get(i);
+            if (now_level < pre_level) {
+                gap_level = 1;
+            } else {
+                gap_level = now_level - pre_level;
+                if (gap_level > 5) {
+                    gap_level = 5;
+                }
+            }
+            if (level_gap.containsKey(gap_level)) {
+                int times = level_gap.get(gap_level);
+                level_gap.put(gap_level, times+1);
+            } else {
+                level_gap.put(gap_level, 1);
+            }
+        }
+
+        /*
         double gap_levels = 0.0;
         int pre_level = level_list.get(0);
         for (int i = 1; i < total_num; i++) {
@@ -144,12 +168,14 @@ public class GroupNode {
 
         gap_levels /= total_num;
         gap_levels *= 0.0025;
+         */
 
         graph_coordinate.AddWarnRatio(warn_ratio);
         graph_coordinate.AddBoardRatio(board_ratio);
         graph_coordinate.AddPairRatio(pair_ratio);
+        graph_coordinate.AddLevelGap(level_gap);
 
-        graph_coordinate.SetGapLevel(gap_levels);
+        //graph_coordinate.SetGapLevel(gap_levels);
 
         // Add for model-2
 
@@ -162,6 +188,7 @@ public class GroupNode {
         warn_ratio.clear();
         board_ratio.clear();
         pair_ratio.clear();
+        level_gap.clear();
 
         PrintCoordinate();
     }
