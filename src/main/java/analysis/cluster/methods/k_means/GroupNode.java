@@ -217,7 +217,16 @@ public class GroupNode {
         return this.node_id;
     }
 
-    public int PrintResult(WritableSheet sheet, int start_line) {
-        return this.group_data.MakeGroup(sheet, start_line);
+    public int PrintResult(WritableSheet sheet, int start_line, boolean with_result) {
+        int i = this.group_data.MakeGroup(sheet, start_line);
+
+        if (with_result) {
+            int j = this.group_data.PrintOutAlertPlace(sheet, i, "MUTLOS");
+            return j;
+        }
+        else {
+            return i;
+        }
+
     }
 }

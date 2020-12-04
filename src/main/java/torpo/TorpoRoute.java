@@ -225,10 +225,6 @@ public class TorpoRoute {
     }
 
     private void UpdateTorpoData(int route_type) {
-        if (this.route_name.equals("1063-1022")) {
-            int i = 0;
-            i = i + 1;
-        }
         HashMap<String, TorpoDevice> tmp_entry_map = entry_device_map.get(route_type);
         for (String str:
                 tmp_entry_map.keySet()) {

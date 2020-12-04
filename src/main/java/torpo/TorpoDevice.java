@@ -208,10 +208,6 @@ public class TorpoDevice extends Device {
     }
 
     public void FlushData(int level, int route_type) {
-        if (this.GetLabel().equals("1068-0-3-11SFIU-3")) {
-            int i = 3;
-            i = i + 1;
-        }
         int times = this.flush_map.get(route_type);
         times = times + 1;
         this.flush_map.put(route_type, times);
@@ -266,6 +262,11 @@ public class TorpoDevice extends Device {
     }
 
     public boolean FlushPseudoData(int level, int route_type, int pseudo_level, boolean flag) {
+
+        if (level == 0 && pseudo_level == -1 && route_type == 3) {
+            int i = 0;
+            i = i + 1;
+        }
         if (this.pseudo_level_map.containsKey(route_type)) {
             return false;
         }

@@ -126,7 +126,7 @@ public class K_Means {
             for (Cluster cluster : cluster_list) {
                 WritableSheet sheet = workbook.createSheet("cluster-" + String.valueOf(i), i);
                 i++;
-                cluster.PrintResult(sheet);
+                cluster.PrintResult(sheet, false);
             }
             WritableSheet sheet = workbook.createSheet("value_history", cluster_num);
             i = 0;

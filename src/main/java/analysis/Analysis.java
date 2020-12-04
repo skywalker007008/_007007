@@ -161,9 +161,9 @@ public class Analysis {
 
         for (i = 0; i < b_size; i++) {
             Coefficient.ReadCoef(arg_list[i]);
-            find_cluster.SetPath("./result/k_means/model_3/arg_type" + String.valueOf(i) + "/");
+            find_cluster.SetPath("./result/k_means/model_4/arg_type" + String.valueOf(i) + "/");
             ArrayList<Object> result = new ArrayList<Object>();
-            for (int cluster_num = 3; cluster_num < 20; cluster_num++) {
+            for (int cluster_num = 19; cluster_num < 20; cluster_num++) {
 
                 Object e_list =
                         find_cluster.FindClustersByMethod(method, 10, cluster_num);
@@ -171,7 +171,7 @@ public class Analysis {
                 result.add(e_list);
             }
             if (method.equals("K-Means")) {
-                File e_file = new File("./result/k_means/model_3/arg_type" + String.valueOf(i) + "/e_value.xls");
+                File e_file = new File("./result/k_means/model_4/arg_type" + String.valueOf(i) + "/e_value.xls");
                 try {
                     e_file.createNewFile();
                     WritableWorkbook book = Workbook.createWorkbook(e_file);
@@ -231,14 +231,20 @@ public class Analysis {
         }
 
         try {
-            File k_means_file = new File("./result/k_means/model_3/arg_type2/cluster_match_2_19.xls");
+            File k_means_file = new File("./result/k_means/model_4/arg_type2/cluster_match_2_19.xls");
             k_means_file.createNewFile();
             WritableWorkbook workbook = Workbook.createWorkbook(k_means_file);
             i = 0;
             for (Cluster cluster : cluster_list) {
                 WritableSheet sheet = workbook.createSheet("cluster-" + String.valueOf(i), i);
                 i++;
-                cluster.PrintResult(sheet);
+
+                if (cluster.GetClusterId()==0) {
+                    cluster.PrintResult(sheet, true);
+                } else {
+
+                    cluster.PrintResult(sheet, false);
+                }
             }
 
             workbook.write();

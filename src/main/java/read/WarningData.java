@@ -34,7 +34,7 @@ public class WarningData {
         return true;
     }
 
-    public void ReadExcelDataNew(String filename) {
+    public void ReadExcelDataNew(String filename, boolean is_new) {
         File file = new File(filename);
 
         try {
@@ -44,38 +44,77 @@ public class WarningData {
             Workbook wb = Workbook.getWorkbook(is);
             // Excel的页签数量
             int sheet_size = wb.getNumberOfSheets();
-            for (int index = 0; index < sheet_size; index++) {
-                // 每个页签创建一个Sheet对象
-                Sheet sheet = wb.getSheet(index);
+            if (!is_new) {
+                for (int index = 0; index < sheet_size; index++) {
+                    // 每个页签创建一个Sheet对象
+                    Sheet sheet = wb.getSheet(index);
 
-                int columns = sheet.getColumns();
-                int rows = sheet.getRows();
-                // sheet.getRows()返回该页的总行数
-                for (int i = 1; i < sheet.getRows(); i++) {
-                    // sheet.getColumns()返回该页的总列数
-                    WarningFormatData data = new WarningFormatData();
+                    int columns = sheet.getColumns();
+                    int rows = sheet.getRows();
+                    // sheet.getRows()返回该页的总行数
+                    for (int i = 1; i < sheet.getRows(); i++) {
+                        // sheet.getColumns()返回该页的总列数
+                        WarningFormatData data = new WarningFormatData();
 
-                    data.order = Integer.parseInt(sheet.getCell(12, i).getContents());
-                    Device dev = new Device();
-                    dev.device_type = sheet.getCell(5,i).getContents();
-                    boolean judge = dev.ReadDeviceLine(sheet.getCell(4, i).getContents(  ));
-                    judge = judge && dev.ReadDeviceInfo(sheet.getCell(6, i).getContents());
-                    data.device_data = dev;
-                    dev.CountOnlyLabel();
-                    if (judge) {
-                        data.device_data.CountOnlyLabel();
-                        InsertData(data);
+                        data.order = Integer.parseInt(sheet.getCell(12, i).getContents());
+                        Device dev = new Device();
+                        dev.device_type = sheet.getCell(5, i).getContents();
+                        boolean judge = dev.ReadDeviceLine(sheet.getCell(4, i).getContents());
+                        judge = judge && dev.ReadDeviceInfo(sheet.getCell(6, i).getContents());
+                        data.device_data = dev;
+                        dev.CountOnlyLabel();
+                        if (judge) {
+                            data.device_data.CountOnlyLabel();
+                            InsertData(data);
+                        }
+                        String impt_value = sheet.getCell(1, i).getContents();
+                        int err_value = Integer.parseInt(sheet.getCell(2, i).getContents());
+                        String string_type = sheet.getCell(3, i).getContents();
+                        ErrorSignalType err_signal = new ErrorSignalType(string_type, err_value, impt_value);
+                        data.err_signal = err_signal;
+
+                        data.happen_time = new MyTime(sheet.getCell(8, i).getContents());
+                        data.handle_time = new MyTime(sheet.getCell(9, i).getContents());
+                        data.confirm_time = new MyTime(sheet.getCell(10, i).getContents());
+
                     }
-                    String impt_value = sheet.getCell(1,i).getContents();
-                    int err_value = Integer.parseInt(sheet.getCell(2,i).getContents());
-                    String string_type = sheet.getCell(3,i).getContents();
-                    ErrorSignalType err_signal = new ErrorSignalType(string_type, err_value, impt_value);
-                    data.err_signal = err_signal;
+                }
+            } else {
+                for (int index = 0; index < sheet_size; index++) {
+                    // 每个页签创建一个Sheet对象
+                    Sheet sheet = wb.getSheet(index);
 
-                    data.happen_time = new MyTime(sheet.getCell(8,i).getContents());
-                    data.handle_time = new MyTime(sheet.getCell(9,i).getContents());
-                    data.confirm_time = new MyTime(sheet.getCell(10,i).getContents());
+                    int columns = sheet.getColumns();
+                    int rows = sheet.getRows();
+                    // sheet.getRows()返回该页的总行数
+                    for (int i = 1; i < sheet.getRows(); i++) {
+                        // sheet.getColumns()返回该页的总列数
+                        WarningFormatData data = new WarningFormatData();
 
+                        data.order = Integer.parseInt(sheet.getCell(24, i).getContents());
+                        Device dev = new Device();
+                        dev.device_type = sheet.getCell(0, i).getContents();
+                        boolean judge = dev.ReadDeviceLine(sheet.getCell(2, i).getContents());
+                        judge = judge && dev.ReadDeviceInfo(sheet.getCell(13, i).getContents());
+                        data.device_data = dev;
+                        dev.CountOnlyLabel();
+                        if (judge) {
+                            data.device_data.CountOnlyLabel();
+                            InsertData(data);
+                        } else {
+                            continue;
+                        }
+                        String impt_value = sheet.getCell(6, i).getContents();
+                        int err_value = Integer.parseInt(sheet.getCell(18, i).getContents());
+                        String string_type = sheet.getCell(4, i).getContents();
+                        ErrorSignalType err_signal = new ErrorSignalType(string_type, err_value, impt_value);
+                        data.err_signal = err_signal;
+
+                        data.happen_time = new MyTime(sheet.getCell(8, i).getContents(), false);
+                        data.handle_time = new MyTime(sheet.getCell(9, i).getContents(), false);
+                        data.confirm_time = new MyTime(sheet.getCell(10, i).getContents(), false);
+
+                    }
                 }
             }
         } catch (FileNotFoundException e) {

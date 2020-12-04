@@ -18,9 +18,9 @@ public class MainProcedure {
 
         System.out.println("Excel Data Loading...");
         WarningData training_data = new WarningData(1000);
-        training_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_part.xls");
+        training_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_part.xls", false);
         WarningData proof_data = new WarningData(1000);
-        proof_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_part.xls");
+        proof_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_second2.xls", false);
         //excel_data.ReadExcelDataNew("C://Users//Administrator//IdeaProjects//_007007/test_new.xls");
         System.out.println("Excel Data Loaded Success!");
         // Test Almost Finished

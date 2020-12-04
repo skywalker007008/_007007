@@ -78,6 +78,10 @@ public class Device {
 
     public boolean ReadDeviceInfo(String info) {
 
+        if (info == null || info.equals("")) {
+            return false;
+        }
+
         Pattern pat = Pattern.compile(Device.device_location_pattern);
         Matcher match = pat.matcher(info);
 

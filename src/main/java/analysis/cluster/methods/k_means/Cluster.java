@@ -78,10 +78,10 @@ public class Cluster {
         return this.cluster_id;
     }
 
-    public void PrintResult(WritableSheet sheet) {
+    public void PrintResult(WritableSheet sheet, boolean with_result) {
         int i = 0;
         for (GroupNode node: nodes) {
-            int start_line = node.PrintResult(sheet, i);
+            int start_line = node.PrintResult(sheet, i, with_result);
             i = start_line + 2;
         }
     }

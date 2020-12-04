@@ -212,4 +212,57 @@ public class WarningGroupData {
     public int GetSize() {
         return this.warn_data_list.size();
     }
+
+    public int PrintOutAlertPlace(WritableSheet sheet, int i, String handle_process) {
+        if (!handle_process.equals("MUTLOS")) {
+            return i;
+        }
+        int last_level = -1;
+        String last_port_name = null;
+        int this_level;
+        String this_port_name;
+        for (WarningFormatData data: this.warn_data_list) {
+            if (data.err_signal.string_type.equals("MUT_LOS")) {
+                this_port_name = data.device_data.GetLabel();
+                TorpoDevice dev = this.torpo_map.get(this_port_name);
+                Object o = dev.GetLevelObjectOfRouteType(0);
+                if (o instanceof Integer) {
+                    this_level = (Integer)o;
+                } else if (o instanceof Pair){
+                    Pair<Integer, Integer> pair = (Pair<Integer, Integer>) o;
+                    int a = pair.getKey();
+                    int b = pair.getValue();
+                    this_level = a + b;
+                } else {
+                    return i;
+                }
+                if (last_level == -1 || last_port_name == null) {
+                    last_level = this_level;
+                    last_port_name = this_port_name;
+                } else {
+                    if (this_level - last_level == 1) {
+                        try {
+                            Label label = new Label(0, i, "Alert-location:");
+                            sheet.addCell(label);
+                            label = new Label(2, i, last_port_name);
+                            sheet.addCell(label);
+                            label = new Label(2, i+1, this_port_name);
+                            sheet.addCell(label);
+                            label = new Label(3, i, String.valueOf(last_level));
+                            sheet.addCell(label);
+                            label = new Label(3, i+1, String.valueOf(this_level));
+                            sheet.addCell(label);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        last_level = this_level;
+                        last_port_name = this_port_name;
+                    }
+                }
+            }
+
+        }
+        return (i + 2);
+    }
 }
