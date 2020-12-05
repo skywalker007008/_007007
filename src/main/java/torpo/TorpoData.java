@@ -22,7 +22,7 @@ public class TorpoData {
     public void ReadTorpoInfo(String filename) {
         File in_file = new File(filename);
         //File out_file = new File("Torpo_route.xls");
-        File out_file = new File("Torpo_TYPE_NEW_LINUX-02.xls");
+        File out_file = new File("Torpo_TYPE_NEW_LINUX-03.xls");
         try {
             // 创建输入流，读取Excel
             InputStream is = new FileInputStream(in_file.getAbsolutePath());

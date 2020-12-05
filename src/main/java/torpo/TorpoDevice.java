@@ -251,14 +251,61 @@ public class TorpoDevice extends Device {
                     tp_dev.FlushData(now_level + 1, route_type);
                 }
             } else {
-                int direction = TorpoRoute.GetRouteOtherSide(route_type);
+                /*
                 if (tp_dev.ContainsRouteType(direction)) {
                     tp_dev.FlushPseudoData(now_level, route_type, 1, false);
                 } else {
                     tp_dev.FlushPseudoData(now_level, route_type, -1, false);
                 }
+
+                 */
+
+                boolean is_up = this.JudgeDirectionOfOtherPort(str, route_type);
+
+                if (is_up) {
+                    tp_dev.FlushPseudoData(now_level, route_type, 1, false);
+                } else {
+                    tp_dev.FlushPseudoData(now_level, route_type, -1, false);
+                }
+
+                // According to the direction and related place to judge the value
+                // Same direction, next -- 1
+                // Same direction, last -- -1
+                // Reverse direction, next -- -1
+                // Reverse direction, last -- 1
             }
         }
+    }
+
+    private boolean JudgeDirectionOfOtherPort(String str, int route_type) {
+        TorpoDevice tp_dev = next_dev_map.get(str);
+        for (int i = 0; i < 4; i++) {
+            if (i==route_type) {
+                continue;
+            }
+            {
+                boolean bool_1 = next_route_map.containsKey(i) && next_route_map.get(i).contains(str);
+                boolean bool_2 = above_route_map.containsKey(i) && above_route_map.get(i).contains(str);
+                if ((!bool_1) && (!bool_2)) {
+                    continue;
+                } else {
+                    if (bool_1) {
+                        if (TorpoRoute.GetRouteOtherSide(i) == route_type) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        if (TorpoRoute.GetRouteOtherSide(i) == route_type) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public boolean FlushPseudoData(int level, int route_type, int pseudo_level, boolean flag) {
@@ -274,21 +321,16 @@ public class TorpoDevice extends Device {
         pseudo_level_map.put(route_type, level_pair);
         for (String str:
                 this.next_dev_map.keySet()) {
-            TorpoDevice dev = next_dev_map.get(str);
-            if (!dev.ContainsRouteType(route_type)) {
-                int direction = TorpoRoute.GetRouteOtherSide(route_type);
-                if (this.next_route_map.containsKey(direction)) {
-                    if (this.next_route_map.get(direction).contains(dev)) {
-                        dev.FlushPseudoData(level, route_type, pseudo_level + 1, false);
-                    } else {
-                        dev.FlushPseudoData(level, route_type, pseudo_level - 1, false);
-                    }
-                } else {
-                    dev.FlushPseudoData(level, route_type, pseudo_level - 1, false);
-                }
+            TorpoDevice tp_dev = next_dev_map.get(str);
+            if (tp_dev.ContainsRouteType(route_type)) {
+                continue;
+            }
+            boolean is_up = this.JudgeDirectionOfOtherPort(str, route_type);
+
+            if (is_up) {
+                tp_dev.FlushPseudoData(level, route_type, pseudo_level + 1, false);
             } else {
-                // Error
-                // System.out.println("Do not need to continue. " + this.GetLabel());
+                tp_dev.FlushPseudoData(level, route_type, pseudo_level - 1, false);
             }
         }
         return true;
