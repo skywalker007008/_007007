@@ -1,11 +1,10 @@
-import analysis.Analysis;
-import analysis.cluster.methods.k_means.Cluster;
-import analysis.cluster.methods.k_means.FindClusters;
-import read.WarningData;
-import resource.TypeLib;
-import torpo.TorpoData;
+import com.buaa.edu.domain.temp.analysis.Analysis;
+import com.buaa.edu.domain.temp.analysis.cluster.methods.k_means.FindClusters;
+import com.buaa.edu.domain.temp.read.WarningData;
+import com.buaa.edu.domain.temp.resource.TypeLib;
+import com.buaa.edu.domain.temp.torpo.TorpoData;
 
-import java.util.ArrayList;
+import java.io.File;
 
 public class MainProcedure {
     public static void main(String args[]) {
@@ -18,9 +17,11 @@ public class MainProcedure {
 
         System.out.println("Excel Data Loading...");
         WarningData training_data = new WarningData(1000);
-        training_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_part.xls", false);
+        File file1 = new File("/home/skywalker/桌面/G410/_007007/resources/test_part.xls");
+        File file2 = new File("/home/skywalker/桌面/G410/_007007/resources/alert-log2.xls");
+        training_data.ReadExcelDataNew(file1, false, false);
         WarningData proof_data = new WarningData(1000);
-        proof_data.ReadExcelDataNew("/home/skywalker/桌面/G410/_007007/resources/test_second2.xls", false);
+        proof_data.ReadExcelDataNew(file2, true, true);
         //excel_data.ReadExcelDataNew("C://Users//Administrator//IdeaProjects//_007007/test_new.xls");
         System.out.println("Excel Data Loaded Success!");
         // Test Almost Finished
@@ -29,6 +30,7 @@ public class MainProcedure {
 
         System.out.println("Analysing...");
         Analysis analyse = new Analysis(training_data, torpo_data);
+        analyse.AddExcelData(proof_data);
         analyse.SetLib(lib);
         analyse.AnalysisData();
 
@@ -36,7 +38,7 @@ public class MainProcedure {
         Double[][] arg = analyse.ReadArgs("./args/args_for_model3.xls");
         FindClusters clusters = analyse.FindClustersByMethod("K-Means", arg);
         System.out.println("Finding Clusters Ending");
-
+/*
         Analysis proof_analyse = new Analysis(proof_data, torpo_data);
         proof_analyse.SetLib(lib);
         proof_analyse.AnalysisData();
